@@ -69,6 +69,12 @@ namespace System
             else return float.NaN;
         }
 
+        public static decimal? ToDecimal(this string str)
+        {
+            if (decimal.TryParse(str, out var d)) return d;
+            else return null;
+        }
+
 
         public static DateTime? ToDateTime(this string str)
         {

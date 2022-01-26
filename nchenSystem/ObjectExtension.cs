@@ -36,6 +36,7 @@
             if (value is DateTime dt) return dt.ToSqlValueString();
             else if (value is string str)
                 return (string.IsNullOrEmpty(str) && allowDbNull) ? "NULL" : $"'{str}'";
+            else if (value is bool b) return b ? "1" : "0";
             else return value.ToString();
         }
     }
