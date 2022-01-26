@@ -42,5 +42,38 @@ namespace System
             }
             return toReturn;
         }
+
+        public static bool? ToBoolean(this string str)
+        {
+            if (bool.TryParse(str, out var b)) return b;
+            else if (str == "0") return false;
+            else if (str == "1") return true;
+            else return null;
+        }
+
+        public static byte? ToByte(this string str)
+        {
+            if (byte.TryParse(str, out var b)) return b;
+            else return null;
+        }
+
+        public static int? ToInt(this string str)
+        {
+            if (int.TryParse(str, out var i)) return i;
+            else return null;
+        }
+
+        public static float ToFloat(this string str)
+        {
+            if (float.TryParse(str, out var f)) return f;
+            else return float.NaN;
+        }
+
+
+        public static DateTime? ToDateTime(this string str)
+        {
+            if (DateTime.TryParse(str, out var dt)) return dt;
+            else return null;
+        }
     }
 }
