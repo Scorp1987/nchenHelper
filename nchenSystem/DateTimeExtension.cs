@@ -12,7 +12,7 @@
         /// and ignore the milliseconds.
         /// </returns>
         public static DateTime ToRoundDownToSecond(this DateTime dt)
-            => new DateTime(dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, dt.Second, dt.Second);
+            => new DateTime(dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, dt.Second);
 
         /// <summary>
         /// Convert the value of current <see cref="DateTime"/> object

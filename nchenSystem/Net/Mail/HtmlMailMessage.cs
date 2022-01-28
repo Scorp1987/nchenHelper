@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
+using System.Reflection;
 using System.Xml;
 
 namespace System.Net.Mail
@@ -76,7 +78,8 @@ namespace System.Net.Mail
             string name,
             string width = null,
             string cellPadding = null,
-            bool showTableHeader = true)
+            bool showTableHeader = true,
+            IEnumerable<string> columnNames = null)
         {
             if (width != null) this.style.InnerText += "\n." + name + "{width:" + width + ";}";
             var tblObj = this.body.AppendChild(doc.CreateElement("table"));
@@ -85,12 +88,16 @@ namespace System.Net.Mail
             var tr = tblObj.AppendChild(doc.CreateElement("tr"));
             if (showTableHeader)
                 foreach (DataColumn col in table.Columns)
+                {
+                    if (columnNames?.Contains(col.ColumnName) == false) continue;
                     tr.AppendChild(doc.CreateElement("th")).InnerText = col.ColumnName;
+                }
             foreach (DataRow row in table.Rows)
             {
                 tr = tblObj.AppendChild(doc.CreateElement("tr"));
                 foreach (DataColumn col in table.Columns)
                 {
+                    if (columnNames?.Contains(col.ColumnName) == false) continue;
                     var td = tr.AppendChild(doc.CreateElement("td"));
                     object value = row[col];
                     if (value is DateTime dt)
@@ -113,19 +120,49 @@ namespace System.Net.Mail
             UpdateBody();
         }
 
-        public void AddTable<T>(
-            IEnumerable<T> list,
+        public void AddTable<TObject>(
+            IEnumerable<TObject> list,
             string name,
             string width = null,
             string cellPadding = null,
             bool showTableHeader = true)
+            where TObject : class
         {
-            if (width != null) this.style.InnerText += "\n." + name + "{width:" + width + ";}";
+            var properties = typeof(TObject).GetProperties();
+            AddTable(list, name, properties, width, cellPadding, showTableHeader);
+        }
+
+        public void AddTable<TObject, TAttribute>(
+            IEnumerable<TObject> list,
+            string name,
+            string width = null,
+            string cellPadding = null,
+            bool showTableHeader = true)
+            where TObject : class
+            where TAttribute : Attribute
+        {
+            var properties = from property in typeof(TObject).GetProperties()
+                             let attributes = property.GetCustomAttributes<TAttribute>()
+                             where attributes.Count() > 0
+                             select property;
+            AddTable(list, name, properties, width, cellPadding, showTableHeader);
+        }
+
+
+        private void AddTable<TObject>(
+            IEnumerable<TObject> list,
+            string name,
+            IEnumerable<PropertyInfo> properties,
+            string width = null,
+            string cellPadding = null,
+            bool showTableHeader = true)
+            where TObject : class
+        {
+            if (width != null) this.style.InnerText += "\n." + name + "{width:" + width + "}";
             var tblObj = this.body.AppendChild(doc.CreateElement("table"));
             tblObj.Attributes.Append(doc.CreateAttribute("class")).Value = name;
             if (cellPadding != null) tblObj.Attributes.Append(doc.CreateAttribute("cellpadding")).Value = cellPadding;
             var tr = tblObj.AppendChild(doc.CreateElement("tr"));
-            var properties = typeof(T).GetProperties();
             if (showTableHeader)
                 foreach (var property in properties)
                     tr.AppendChild(doc.CreateElement("th")).InnerText = property.Name;
