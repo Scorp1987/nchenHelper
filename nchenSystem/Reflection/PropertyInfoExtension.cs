@@ -1,4 +1,7 @@
 ﻿using System.ComponentModel;
+using System.Data.Attributes;
+using System.Data.Exceptions;
+using System.Linq;
 
 namespace System.Reflection
 {
@@ -22,6 +25,51 @@ namespace System.Reflection
             }
             else
                 return TypeDescriptor.GetConverter(propertyInfo.PropertyType);
+        }
+
+
+
+        /// <summary>
+        /// Get the name of the column for property with <typeparamref name="TAttribute"/>
+        /// </summary>
+        /// <typeparam name="TAttribute">
+        /// <see cref="DataColumnInfoAttribute"/> type for the property
+        /// </typeparam>
+        /// <param name="property">Property of an object</param>
+        /// <returns>
+        /// <see cref="MemberInfo.Name"/> if <see cref="DataColumnInfoAttribute.Name"/> is <see langword="null"/>,
+        /// otherwise <see cref="DataColumnInfoAttribute.Name"/>
+        /// </returns>
+        /// <exception cref="ColumnInfoAttributeNotFoundException{TObject}">
+        /// Can't find <see cref="ColumnInfoAttributeNotFoundException{TObject}"/> attribute in property with <paramref name="propertyName"/>
+        /// </exception>
+        public static string GetDataTableColumnName<TAttribute>(this PropertyInfo property)
+            where TAttribute : DataColumnInfoAttribute
+        {
+            var attribute = GetAttribute<TAttribute>(property);
+
+            return attribute?.Name ?? property.Name;
+        }
+
+        public static string GetDataTableDbDataType<TAttribute>(this PropertyInfo property)
+            where TAttribute : DataColumnInfoAttribute
+        {
+            var attribute = GetAttribute<TAttribute>(property);
+            return GetDbDataType(property, attribute);
+        }
+
+        private static TAttribute GetAttribute<TAttribute>(this PropertyInfo property)
+            where TAttribute : DataColumnInfoAttribute
+        {
+            var attribute = property.GetCustomAttributes<TAttribute>().FirstOrDefault();
+            if (attribute == null) throw new ColumnInfoAttributeNotFoundException<TAttribute>(property.Name);
+            return attribute;
+        }
+
+        private static string GetDbDataType(this PropertyInfo property, DataColumnInfoAttribute attribute)
+        {
+            if (string.IsNullOrEmpty(attribute.DbDataType)) throw new EmptyDataTypeException(property.Name);
+            return attribute.GetDbDataType();
         }
     }
 }

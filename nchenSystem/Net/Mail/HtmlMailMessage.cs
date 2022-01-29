@@ -33,7 +33,7 @@ namespace System.Net.Mail
         }
 
         public void AddText(
-            string @string,
+            string text,
             string name,
             string align = null,
             string width = null,
@@ -51,7 +51,7 @@ namespace System.Net.Mail
                 style.InnerText += "}";
             }
             var div = this.body.AppendChild(doc.CreateElement("div"));
-            div.InnerXml = @string.Replace("\n", "<br />");
+            div.InnerXml = text.Replace("\n", "<br />");
             div.Attributes.Append(doc.CreateAttribute("class")).Value = name;
             if (align != null) div.Attributes.Append(doc.CreateAttribute("align")).Value = align;
 

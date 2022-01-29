@@ -31,10 +31,7 @@ namespace System
         {
             type.CheckClass();
             return from property in type.GetProperties()
-                   let attribute = property.GetCustomAttributes<TAttribute>().FirstOrDefault()
-                   where attribute != null
-                   let columnName = attribute?.Name ?? property.Name
-                   select columnName;
+                   select property.GetDataTableColumnName<TAttribute>();
         }
 
         /// <summary>
@@ -65,10 +62,7 @@ namespace System
             var property = type.GetProperty(propertyName);
             if (property == null) throw new PropertyInfoNotFoundException(propertyName);
 
-            var attribute = property.GetCustomAttributes<TAttribute>().FirstOrDefault();
-            if (attribute == null) throw new ColumnInfoAttributeNotFoundException<TAttribute>(propertyName);
-
-            return attribute?.Name ?? property.Name;
+            return property.GetDataTableColumnName<TAttribute>();
         }
         #endregion
 

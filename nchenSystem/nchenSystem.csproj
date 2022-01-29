@@ -47,10 +47,17 @@
     <Compile Include="Collections\Generic\ListItemChangedEventArgs.cs" />
     <Compile Include="Collections\Generic\ListItemRemovedEventArgs.cs" />
     <Compile Include="Collections\Generic\ListRangeItemChangedEventArgs.cs" />
+    <Compile Include="ComponentModel\APropertyChanging.cs" />
+    <Compile Include="ComponentModel\APropertyChangingChanged.cs" />
     <Compile Include="ComponentModel\ClearDateTimeConverter.cs" />
     <Compile Include="ComponentModel\FloatNumberConverter.cs" />
     <Compile Include="ComponentModel\ISODateTimeConverter.cs" />
+    <Compile Include="ComponentModel\PropertyChangedEventArgs.cs" />
+    <Compile Include="ComponentModel\PropertyChangedEventArgsExtension.cs" />
+    <Compile Include="ComponentModel\PropertyChangingCancelEventArgs.cs" />
+    <Compile Include="ComponentModel\PropertyChangingEventArgsExtension.cs" />
     <Compile Include="Data\Attributes\DataColumnInfoAttribute.cs" />
+    <Compile Include="Data\Attributes\StringDataColumnInfoAttribute.cs" />
     <Compile Include="Data\DataRow.cs" />
     <Compile Include="Data\DataRowChangeEventArgs.cs" />
     <Compile Include="Data\DataTable.cs">
@@ -58,6 +65,7 @@
     </Compile>
     <Compile Include="Data\DataTableExtension.cs" />
     <Compile Include="Data\Exceptions\ColumnInfoAttributeNotFoundException.cs" />
+    <Compile Include="Data\Exceptions\EmptyDataTypeException.cs" />
     <Compile Include="Data\Exceptions\PropertyInfoNotFoundException.cs" />
     <Compile Include="Data\SqlClient\SqlBulkCopyExtension.cs" />
     <Compile Include="Data\Types\PropertyAttributeInfo.cs" />

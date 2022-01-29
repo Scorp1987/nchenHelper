@@ -9,7 +9,7 @@ using System.Reflection;
 namespace System.Data
 {
     public class DataTable<TObject> : DataTable
-        where TObject : class, INotifyPropertyChanged, new()
+        where TObject : INotifyPropertyChanging, new()
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="DataTable{TObject}"/> class
@@ -160,7 +160,7 @@ namespace System.Data
         /// <param name="tableName">name of the table in the server</param>
         public virtual void BulkWriteToServer(SqlConnection conn, string tableName)
         {
-            var columnNames = typeof(TObject).GetProperties().Select(p => p.Name); // ObjectExtensions.GetColumnNames<TObject>();
+            var columnNames = typeof(TObject).GetProperties().Select(p => p.Name);
             this.BulkWriteToServer(conn, tableName, columnNames);
         }
 
@@ -181,7 +181,7 @@ namespace System.Data
             RowDeleted -= HandleRowDeleted;
             RowDeleting -= HandleRowDeleting;
 
-            this.Rows.Cast<DataRow<TObject>>().AsParallel().ForAll(row => row.UnsetPropertyChangedHandler());
+            this.Rows.Cast<DataRow<TObject>>().AsParallel().ForAll(row => row.UnsetPropertyChangingHandler());
 
             base.Dispose(disposing);
         }
@@ -207,7 +207,16 @@ namespace System.Data
                 var converter = info.GetConverter();
                 Type type = info.GetDataType(converter);
                 bool allowDbNull = info.GetAllowDBNull(converter);
-                var column = new DataColumn(columnName, type, expression, mappingType) { AllowDBNull = allowDbNull };
+                bool unique = info.GetUnique();
+                var maxLength = info.GetMaxLength();
+                var defaultValue = info.GetDefaultValue(type, allowDbNull);
+                var column = new DataColumn(columnName, type, expression, mappingType)
+                {
+                    AllowDBNull = allowDbNull,
+                    Unique = unique,
+                    MaxLength = maxLength,
+                    DefaultValue = defaultValue
+                };
                 Columns.Add(column);
 
                 RowChanged += HandleRowChanged;
@@ -242,7 +251,7 @@ namespace System.Data
     }
 
     public class DataTable<TObject, TAttribute> : DataTable<TObject>
-        where TObject : class, INotifyPropertyChanged, new()
+        where TObject : INotifyPropertyChanging, new()
         where TAttribute : DataColumnInfoAttribute
     {
         public DataTable(string name) : base(name) { }

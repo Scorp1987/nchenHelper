@@ -2,6 +2,12 @@
 
 namespace System.ComponentModel
 {
+    /// <summary>
+    /// Provides a type converter to convert <see cref="System.DateTime"/> objects to and from various other representations.
+    /// When convert to <see cref="string"/>, return <see langword="dd-MMM-yyyy"/> format string if there is no time component.
+    /// <see langword="dd-MM-yyyy HH:mm:ss"/> format string if there is no millisecond
+    /// otherwise <see langword="dd-MM-yyyy HH:mm:ss.fff"/> format string.
+    /// </summary>
     public class ClearDateTimeConverter : DateTimeConverter
     {
         public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)

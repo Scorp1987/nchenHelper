@@ -8,7 +8,7 @@ using System.Reflection;
 namespace System.Data
 {
     public class DataRow<TObject> : DataRow
-        where TObject : class, INotifyPropertyChanged, new()
+        where TObject : INotifyPropertyChanging, new()
     {
         private TObject _values;
         /// <summary>
@@ -23,7 +23,8 @@ namespace System.Data
                     this._values = new TObject();
                     foreach (DataColumn column in base.Table.Columns)
                         UpdateObjValue(column.ColumnName, base[column.ColumnName]);
-                    SetPropertyChangedHandler();
+                    SetPropertyChangingHandler();
+                    //SetPropertyChangedHandler();
                     //_values.PropertyChanged += this.HandlePropertyChanged;
                 }
                 return _values;
@@ -32,11 +33,13 @@ namespace System.Data
             {
                 //if (_values != null)
                 //    _values.PropertyChanged -= this.HandlePropertyChanged;
-                UnsetPropertyChangedHandler();
+                //UnsetPropertyChangedHandler();
+                UnsetPropertyChangingHandler();
                 _values = value;
                 foreach (var info in this.Infos.Values)
                     UpdateBaseRowValue(info);
-                SetPropertyChangedHandler();
+                SetPropertyChangingHandler();
+                //SetPropertyChangedHandler();
                 //if (_values != null)
                 //    _values.PropertyChanged += this.HandlePropertyChanged;
             }
@@ -104,14 +107,13 @@ namespace System.Data
         /// <returns>underlying value of <see cref="DataRow{TObject}"/> for given <paramref name="index"/></returns>
         protected virtual string GetColumnName(string propertyName) => propertyName;
 
-        private void SetPropertyChangedHandler()
+        private void SetPropertyChangingHandler()
         {
-            if (_values != null) _values.PropertyChanged += this.HandlePropertyChanged;
+            if (_values != null) _values.PropertyChanging += this.HandlePropertyChanging;
         }
-
-        internal void UnsetPropertyChangedHandler()
+        internal void UnsetPropertyChangingHandler()
         {
-            if (_values != null) _values.PropertyChanged -= this.HandlePropertyChanged;
+            if (_values != null) _values.PropertyChanging -= this.HandlePropertyChanging;
         }
 
         /// <summary>
@@ -222,17 +224,20 @@ namespace System.Data
             info.Property.SetValue(this.Values, value);
         }
 
-        private void HandlePropertyChanged(object obj, PropertyChangedEventArgs e)
+        private void HandlePropertyChanging(object obj, PropertyChangingEventArgs e)
         {
             var info = (from pinfo in this.Infos.Values
                         where pinfo.Property.Name == e.PropertyName
                         select pinfo).FirstOrDefault();
-            UpdateBaseRowValue(info);
+
+            var columnName = info.GetColumnName();
+            object value = e.GetNewValue();
+            UpdateBaseRowValue(columnName, value);
         }
     }
 
     public class DataRow<TObject, TAttribute> : DataRow<TObject>
-        where TObject : class, INotifyPropertyChanged, new()
+        where TObject : INotifyPropertyChanging, new()
         where TAttribute : DataColumnInfoAttribute
     {
         public DataRow(DataRowBuilder builder) : base(builder) { }

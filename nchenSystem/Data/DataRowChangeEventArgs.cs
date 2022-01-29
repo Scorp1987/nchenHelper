@@ -3,7 +3,7 @@
 namespace System.Data
 {
     public class DataRowChangeEventArgs<TObject> : DataRowChangeEventArgs
-        where TObject : class, INotifyPropertyChanged, new()
+        where TObject : INotifyPropertyChanging, new()
     {
         public DataRowChangeEventArgs(DataRow<TObject> row, DataRowAction action) : base(row, action) { }
     }

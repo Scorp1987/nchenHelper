@@ -1,4 +1,5 @@
-﻿namespace System.Data.Attributes
+﻿
+namespace System.Data.Attributes
 {
     /// <summary>
     /// Column Information to be used in property of TObject
@@ -13,8 +14,16 @@
 
         public string Expression { get; set; }
 
-        public MappingType? MappingType { get; set; }
+        public MappingType MappingType { get; set; } = Data.MappingType.Element;
 
-        public bool AllowDBNull { get; set; }
+        public bool AllowDBNull { get; set; } = true;
+
+        public bool Unique { get; set; } = false;
+
+        public string DbDataType { get; set; }
+
+        public object DefaultValue { get; set; }
+
+        public virtual string GetDbDataType() => DbDataType;
     }
 }
