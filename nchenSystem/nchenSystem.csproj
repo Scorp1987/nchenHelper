@@ -83,5 +83,6 @@
     <Compile Include="StringExtension.cs" />
     <Compile Include="TypeExtension.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

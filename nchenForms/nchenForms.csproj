@@ -1,0 +1,173 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{B927B453-CC9F-4F21-B8F1-BE3DB10250FC}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>System.Windows.Forms</RootNamespace>
+    <AssemblyName>CommonControls</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\bin\Release\</OutputPath>
+    <DefineConstants>
+    </DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Args\ItemMovedEventArgs.cs" />
+    <Compile Include="Attributes\GenericCollectionEditorAttribute.cs" />
+    <Compile Include="Converters\GenericConverter.cs" />
+    <Compile Include="GenericCollectionControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GenericPropertyGrid.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="CollectionControl2.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Providers\DefaultProvider.cs" />
+    <Compile Include="TypeCollectionControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TypeObjectControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TypeObjectControl.Designer.cs">
+      <DependentUpon>TypeObjectControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CollectionControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CollectionControl.Designer.cs">
+      <DependentUpon>CollectionControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Args\BeforeChangeArgs.cs" />
+    <Compile Include="Args\ChangedArgs.cs" />
+    <Compile Include="Args\ICancelArgs.cs" />
+    <Compile Include="Args\IChangedArgs.cs" />
+    <Compile Include="Attributes\ControlValueAttribute.cs" />
+    <Compile Include="Attributes\FilePathEditorAttribute.cs" />
+    <Compile Include="Attributes\FormAttribute.cs" />
+    <Compile Include="Attributes\GenericDictionaryEditorAttribute.cs" />
+    <Compile Include="Enums\FormStatusType.cs" />
+    <Compile Include="Extensions.cs" />
+    <Compile Include="GenericDictionaryControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GenericDictionaryControl.Designer.cs">
+      <DependentUpon>GenericDictionaryControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="IObjectControl.cs" />
+    <Compile Include="ILog.cs" />
+    <Compile Include="DataManagementControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="DataManagementControl.Designer.cs">
+      <DependentUpon>DataManagementControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Helper.cs" />
+    <Compile Include="IDataControl.cs" />
+    <Compile Include="ReportPrint.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="UITypeEditors\FilePathEditor.cs" />
+    <Compile Include="UITypeEditors\FolderPathEditor.cs" />
+    <Compile Include="UITypeEditors\GenericCollectionEditor.cs" />
+    <Compile Include="UITypeEditors\GenericDictionaryEditor.cs" />
+    <Compile Include="UITypeEditors\GenericDictionaryEditors\AttributeProvider.cs" />
+    <Compile Include="UITypeEditors\GenericDictionaryEditors\DefaultProvider.cs" />
+    <Compile Include="UITypeEditors\GenericDictionaryEditors\DefaultUsage.cs" />
+    <Compile Include="UITypeEditors\GenericDictionaryEditors\EditableKeyValuePair.cs" />
+    <Compile Include="UITypeEditors\GenericDictionaryEditors\KeyValueDescriptor.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="TypeObjectControl.resx">
+      <DependentUpon>TypeObjectControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CollectionControl.resx">
+      <DependentUpon>CollectionControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DataManagementControl.resx">
+      <DependentUpon>DataManagementControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GenericDictionaryControl.resx">
+      <DependentUpon>GenericDictionaryControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\checked.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\new-file.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\remove-symbol.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\rubbish-bin.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\edit.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons8-export-csv-filled-50.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\printer.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\PrintPreview.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\refresh-page-option.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\bottom.png" />
+    <Content Include="Resources\move-down.png" />
+    <Content Include="Resources\move-up.png" />
+    <Content Include="Resources\top.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\nchenSystem\nchenSystem.csproj">
+      <Project>{403db690-4b58-4d60-8113-0726b8218bd4}</Project>
+      <Name>nchenSystem</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

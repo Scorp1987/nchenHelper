@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace System.Data.Attributes
+﻿namespace System.Data.Attributes
 {
     public class StringDataColumnInfoAttribute : DataColumnInfoAttribute
     {

@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nchenVisualBasic", "nchenVi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nchenIOTest", "nchenIOTest\nchenIOTest.csproj", "{E940D045-20E0-477D-A46C-09C11632EF3E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nchenForms", "nchenForms\nchenForms.csproj", "{B927B453-CC9F-4F21-B8F1-BE3DB10250FC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{E940D045-20E0-477D-A46C-09C11632EF3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E940D045-20E0-477D-A46C-09C11632EF3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E940D045-20E0-477D-A46C-09C11632EF3E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B927B453-CC9F-4F21-B8F1-BE3DB10250FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B927B453-CC9F-4F21-B8F1-BE3DB10250FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B927B453-CC9F-4F21-B8F1-BE3DB10250FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B927B453-CC9F-4F21-B8F1-BE3DB10250FC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
