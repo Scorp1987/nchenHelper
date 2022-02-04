@@ -31,6 +31,8 @@ namespace System
         {
             type.CheckClass();
             return from property in type.GetProperties()
+                   let attributes = property.GetCustomAttributes<TAttribute>()
+                   where attributes.Count() > 0
                    select property.GetDataTableColumnName<TAttribute>();
         }
 
@@ -51,10 +53,6 @@ namespace System
         /// </exception>
         /// <exception cref="PropertyInfoNotFoundException">
         /// Can't find property with <paramref name="propertyName"/>
-        /// </exception>
-        /// <exception cref="ColumnInfoAttributeNotFoundException{TObject}">
-        /// Can't find <see cref="ColumnInfoAttributeNotFoundException{TObject}"/> attribute in property with <paramref name="propertyName"/>
-        /// </exception>
         public static string GetDataTableColumnName<TAttribute>(this Type type, string propertyName)
             where TAttribute : DataColumnInfoAttribute
         {

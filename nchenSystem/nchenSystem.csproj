@@ -64,7 +64,6 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Data\DataTableExtension.cs" />
-    <Compile Include="Data\Exceptions\ColumnInfoAttributeNotFoundException.cs" />
     <Compile Include="Data\Exceptions\EmptyDataTypeException.cs" />
     <Compile Include="Data\Exceptions\PropertyInfoNotFoundException.cs" />
     <Compile Include="Data\SqlClient\SqlBulkCopyExtension.cs" />
