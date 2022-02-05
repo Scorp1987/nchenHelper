@@ -1,8 +1,8 @@
 ﻿namespace System.ComponentModel
 {
-    public class PropertyChangedEventArgs<T> : PropertyChangedEventArgs, IChangedEventArgs<T>
+    public class ChangedEventArgs<T> : EventArgs, IChangedEventArgs<T>
     {
-        public PropertyChangedEventArgs(string propertyName, T previousValue, T currentValue) : base(propertyName)
+        public ChangedEventArgs(T previousValue, T currentValue)
         {
             PreviousValue = previousValue;
             CurrentValue = currentValue;

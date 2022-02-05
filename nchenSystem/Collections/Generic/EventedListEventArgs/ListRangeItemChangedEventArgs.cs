@@ -1,6 +1,6 @@
 ﻿namespace System.Collections.Generic
 {
-    public class ListRangeItemChangedEventArgs : EventArgs
+    public class ListRangeItemChangedEventArgs : EventArgs, IIndex, ICount
     {
         public ListRangeItemChangedEventArgs(int index, int count)
         {

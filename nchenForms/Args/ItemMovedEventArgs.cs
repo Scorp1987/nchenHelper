@@ -2,17 +2,17 @@
 {
     public class ItemMovedEventArgs<TObject> : EventArgs
     {
-        public ItemMovedEventArgs(TObject @object, int originalPosition, int newPosition)
+        public ItemMovedEventArgs(TObject @object, int previousIndex, int currentIndex)
         {
             this.Object = @object;
-            this.OrginalPosition = originalPosition;
-            this.NewPosition = newPosition;
+            this.PreviousIndex = previousIndex;
+            this.CurrentIndex = currentIndex;
         }
 
         public TObject Object { get; }
 
-        public int OrginalPosition { get; }
+        public int PreviousIndex { get; }
 
-        public int NewPosition { get; }
+        public int CurrentIndex { get; }
     }
 }

@@ -148,13 +148,13 @@ namespace System.Windows.Forms
 
         private void SubscribeItemEvents(EditableKeyValuePair<Tkey, TValue> item)
         {
-            item.KeyBeforeChanged += EditableKeyValuePair_KeyBeforeChanged;
+            item.KeyChanging += EditableKeyValuePair_KeyBeforeChanged;
             item.KeyChanged += EditableKeyValuePair_KeyChanged;
             item.ValueChanged += EditableKeyValuePair_ValueChanged;
         }
         private void UnSubscribeItemEvents(EditableKeyValuePair<Tkey, TValue> item)
         {
-            item.KeyBeforeChanged -= EditableKeyValuePair_KeyBeforeChanged;
+            item.KeyChanging -= EditableKeyValuePair_KeyBeforeChanged;
             item.KeyChanged -= EditableKeyValuePair_KeyChanged;
             item.ValueChanged -= EditableKeyValuePair_ValueChanged;
         }
@@ -178,21 +178,21 @@ namespace System.Windows.Forms
             RemoveItem(item);
         }
 
-        private void EditableKeyValuePair_KeyBeforeChanged(object sender, BeforeChangeArgs<Tkey> e)
+        private void EditableKeyValuePair_KeyBeforeChanged(object sender, ChangingEventArgs<Tkey> e)
         {
             e.Cancel = IsKeyExisted(e.NewValue);
         }
-        private void EditableKeyValuePair_KeyChanged(object sender, ChangedArgs<Tkey> e)
+        private void EditableKeyValuePair_KeyChanged(object sender, ChangedEventArgs<Tkey> e)
         {
-            var value = this.Value[e.OldValue];
-            this.Value.Remove(e.OldValue);
-            this.Value.Add(e.NewValue, value);
+            var value = this.Value[e.PreviousValue];
+            this.Value.Remove(e.CurrentValue);
+            this.Value.Add(e.CurrentValue, value);
             this.BindingSource.ResetBindings(false);
         }
-        private void EditableKeyValuePair_ValueChanged(object sender, ChangedArgs<TValue> e)
+        private void EditableKeyValuePair_ValueChanged(object sender, ChangedEventArgs<TValue> e)
         {
             var item = (EditableKeyValuePair<Tkey, TValue>)sender;
-            this.Value[item.Key] = e.NewValue;
+            this.Value[item.Key] = e.CurrentValue;
             this.BindingSource.ResetBindings(false);
         }
     }

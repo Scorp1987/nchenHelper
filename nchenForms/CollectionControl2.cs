@@ -12,7 +12,7 @@ namespace System.Windows.Forms
             this.SplitContainer.Panel2.Controls.Add(this.ObjectControl);
             base.SelectedValueChanged += ObjectCollectionControl_SelectedValueChanged;
             base.NewItemAdded += ObjectCollectionControl_NewItemAdded;
-            base.ItemDeleted += ObjectCollectionControl_ItemDeleted;
+            base.ItemRemoved += ObjectCollectionControl_ItemRemoved;
         }
         public CollectionControl() : this(new DefaultProvider<TObject>()) { }
 
@@ -35,13 +35,13 @@ namespace System.Windows.Forms
             this.ObjectControl.Value = e;
         }
 
-        private void ObjectCollectionControl_NewItemAdded(object sender, TObject e)
+        private void ObjectCollectionControl_NewItemAdded(object sender, ListItemAddedEventArgs<TObject> e)
         {
-            this.ObjectControl.Value = e;
+            this.ObjectControl.Value = e.Value;
             this.ObjectControl.ReadOnly = false;
         }
 
-        private void ObjectCollectionControl_ItemDeleted(object sender, TObject e)
+        private void ObjectCollectionControl_ItemRemoved(object sender, ListItemRemovedEventArgs<TObject> e)
         {
             this.ObjectControl.ReadOnly = base.BindingSource.Count < 1;
         }

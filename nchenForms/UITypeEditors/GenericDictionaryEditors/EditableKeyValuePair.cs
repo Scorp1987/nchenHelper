@@ -8,36 +8,23 @@ namespace System.Windows.Forms.UITypeEditors.GenericDictionaryEditors
     internal class EditableKeyValuePair<TKey, TValue> : CustomTypeDescriptor
     {
         private TKey _key;
+        private TValue _value;
+
         public TKey Key
         {
             get => _key;
-            set
-            {
-                //if (_key.Equals(value)) return;
-                var arg = new BeforeChangeArgs<TKey>(_key, value);
-                KeyBeforeChanged?.Invoke(this, arg);
-                if (arg.Cancel) return;
-                _key = value;
-                KeyChanged?.Invoke(this, arg);
-            }
+            set => SetPropertyValue(ref _key, value, KeyChanging, KeyChanged);
         }
 
-        private TValue _value;
         public TValue Value
         {
             get => _value;
-            set
-            {
-                //if (_value.Equals(value)) return;
-                var orgValue = _value;
-                _value = value;
-                ValueChanged?.Invoke(this, new ChangedArgs<TValue>(orgValue, value));
-            }
+            set => SetPropertyValue(ref _value, value, ValueChanged);
         }
 
-        public event EventHandler<BeforeChangeArgs<TKey>> KeyBeforeChanged;
-        public event EventHandler<ChangedArgs<TKey>> KeyChanged;
-        public event EventHandler<ChangedArgs<TValue>> ValueChanged;
+        public event EventHandler<ChangingEventArgs<TKey>> KeyChanging;
+        public event EventHandler<ChangedEventArgs<TKey>> KeyChanged;
+        public event EventHandler<ChangedEventArgs<TValue>> ValueChanged;
 
         public EditableKeyValuePair(TKey key, TValue value, GenericDictionaryEditorAttribute editorAttribute)
         {
@@ -67,5 +54,40 @@ namespace System.Windows.Forms.UITypeEditors.GenericDictionaryEditors
         public override object GetPropertyOwner(PropertyDescriptor pd) => this;
 
         public override string ToString() => $"[{this.Key},{this.Value}]";
+
+        private bool OnPropertyChanging<T>(T originalValue, T newValue,
+            EventHandler<ChangingEventArgs<T>> handler)
+        {
+            if (handler == null) return true;
+            var args = new ChangingEventArgs<T>(originalValue, newValue);
+            handler(this, args);
+            return !args.Cancel;
+        }
+
+        private void OnPropertyChanged<T>(T previousValue, T currentValue,
+            EventHandler<ChangedEventArgs<T>> handler)
+            => handler?.Invoke(this, new ChangedEventArgs<T>(previousValue, currentValue));
+
+        private bool SetPropertyValue<T>(ref T originalValue, T newValue,
+            EventHandler<ChangingEventArgs<T>> changingHandler,
+            EventHandler<ChangedEventArgs<T>> changedHandler)
+        {
+            if (originalValue?.Equals(newValue) == true) return false;
+            if (!OnPropertyChanging(originalValue, newValue, changingHandler)) return false;
+            var previousValue = originalValue;
+            originalValue = newValue;
+            OnPropertyChanged(previousValue, newValue, changedHandler);
+            return true;
+        }
+
+        private bool SetPropertyValue<T>(ref T originalValue, T newValue,
+            EventHandler<ChangedEventArgs<T>> changedHandler)
+        {
+            if (originalValue?.Equals(newValue) == true) return false;
+            var previousValue = originalValue;
+            originalValue = newValue;
+            OnPropertyChanged(previousValue, newValue, changedHandler);
+            return true;
+        }
     }
 }

@@ -1,15 +1,92 @@
-﻿namespace System.Collections.Generic
+﻿using System.ComponentModel;
+
+namespace System.Collections.Generic
 {
     public class EventedList<T> : IList<T>
     {
         #region Public Events
+        public event EventHandler<ListItemAddingEventArgs<T>> ItemAdding;
         public event EventHandler<ListItemAddedEventArgs<T>> ItemAdded;
+        public event EventHandler<ListItemChangingEventArgs<T>> ItemChanging;
         public event EventHandler<ListItemChangedEventArgs<T>> ItemChanged;
+        public event EventHandler<ListItemRemovingEventArgs<T>> ItemRemoving;
         public event EventHandler<ListItemRemovedEventArgs<T>> ItemRemoved;
-        public event EventHandler ItemCleard;
+        public event EventHandler<ListItemMovingEventArgs<T>> ItemMoving;
+        public event EventHandler<ListItemMovedEventArgs<T>> ItemMoved;
+        public event EventHandler<CancelEventArgs> ItemClearing;
+        public event EventHandler<EventArgs> ItemCleared;
+        public event EventHandler<ListRangeItemChangingEventArgs> ItemReversing;
         public event EventHandler<ListRangeItemChangedEventArgs> ItemReversed;
+        public event EventHandler<ListRangeItemChangingEventArgs> ItemSorting;
         public event EventHandler<ListRangeItemChangedEventArgs> ItemSorted;
         #endregion
+
+
+        private void OnChangingChanged<TChangingEventArgs, TChangedEventArgs>(
+            Func<TChangingEventArgs> getChangingArgs, EventHandler<TChangingEventArgs> changingHandler, Action action,
+            Func<TChangedEventArgs> getChangedArgs, EventHandler<TChangedEventArgs> changedHandler)
+            where TChangingEventArgs: CancelEventArgs
+            where TChangedEventArgs: EventArgs
+        {
+            if(changingHandler != null)
+            {
+                var args = getChangingArgs();
+                changingHandler?.Invoke(this, args);
+                if (args.Cancel) return;
+            }
+            action();
+            changedHandler?.Invoke(this, getChangedArgs());
+        }
+        private bool OnChangingChangedResult<TChangingEventArgs, TChangedEventArgs>(
+            Func<TChangingEventArgs> getChangingArgs, EventHandler<TChangingEventArgs> changingHandler, Func<bool> action,
+            Func<TChangedEventArgs> getChangedArgs, EventHandler<TChangedEventArgs> changedHandler)
+            where TChangingEventArgs : CancelEventArgs
+            where TChangedEventArgs : EventArgs
+        {
+            if (changingHandler != null)
+            {
+                var args = getChangingArgs();
+                changingHandler?.Invoke(this, args);
+                if (args.Cancel) return false;
+            }
+            var success = action();
+            if(success)
+                changedHandler?.Invoke(this, getChangedArgs());
+            return success;
+        }
+
+        private void OnChange(int index, T newValue, Action action)
+        {
+            var originalValue = _list[index];
+            OnChangingChanged(
+                () => new ListItemChangingEventArgs<T>(index, originalValue, newValue), ItemChanging, action,
+                () => new ListItemChangedEventArgs<T>(index, originalValue, newValue), ItemChanged);
+        }
+        private void OnAdd(int index, T item, Action action)
+            => OnChangingChanged(
+                () => new ListItemAddingEventArgs<T>(index, item), ItemAdding, action,
+                () => new ListItemAddedEventArgs<T>(index, item), ItemAdded);
+        private bool OnRemove(int index, T item, Func<bool> action)
+            => OnChangingChangedResult(
+                () => new ListItemRemovingEventArgs<T>(index, item), ItemRemoving, action,
+                () => new ListItemRemovedEventArgs<T>(index, item), ItemRemoved);
+        private void OnClear(Action action)
+            => OnChangingChanged(
+                () => new CancelEventArgs(), ItemClearing, action,
+                () => new EventArgs(), ItemCleared);
+        private void OnMove(T item, int originalIndex, int newIndex, Action action)
+            => OnChangingChanged(
+                () => new ListItemMovingEventArgs<T>(item, originalIndex, newIndex), ItemMoving, action,
+                () => new ListItemMovedEventArgs<T>(item, originalIndex, newIndex), ItemMoved);
+        private void OnReverse(int index, int count, Action action)
+            => OnChangingChanged(
+                () => new ListRangeItemChangingEventArgs(index, count), ItemReversing, action,
+                () => new ListRangeItemChangedEventArgs(index, count), ItemReversed);
+        private void OnSort(int index, int count, Action action)
+            => OnChangingChanged(
+                () => new ListRangeItemChangingEventArgs(index, count), ItemSorting, action,
+                () => new ListRangeItemChangedEventArgs(index, count), ItemSorted);
+
 
 
         #region Properties
@@ -35,9 +112,7 @@
             set
             {
                 if (IsReadOnly) throw EXCEPTION_READ_ONLY;
-                var orgValue = _list[index];
-                _list[index] = value;
-                ItemChanged?.Invoke(this, new ListItemChangedEventArgs<T>(index, orgValue, value));
+                OnChange(index, value, () => _list[index] = value);
             }
         }
 
@@ -98,8 +173,7 @@
         public void Add(T item)
         {
             if (IsReadOnly) throw EXCEPTION_READ_ONLY;
-            _list.Add(item);
-            ItemAdded?.Invoke(this, new ListItemAddedEventArgs<T>(_list.Count - 1, item));
+            OnAdd(_list.Count, item, () => _list.Add(item));
         }
 
         /// <summary>
@@ -154,8 +228,7 @@
         public void Insert(int index, T item)
         {
             if (IsReadOnly) throw EXCEPTION_READ_ONLY;
-            this._list.Insert(index, item);
-            ItemAdded?.Invoke(this, new ListItemAddedEventArgs<T>(index, item));
+            OnAdd(index, item, () => _list.Insert(index, item));
         }
 
         /// <summary>
@@ -217,10 +290,7 @@
         {
             if (IsReadOnly) throw EXCEPTION_READ_ONLY;
             var index = this._list.IndexOf(item);
-            var isSuccess = this._list.Remove(item);
-            if (isSuccess)
-                this.ItemRemoved?.Invoke(this, new ListItemRemovedEventArgs<T>(index, item));
-            return isSuccess;
+            return OnRemove(index, item, () => this._list.Remove(item));
         }
 
         /// <summary>
@@ -240,8 +310,7 @@
         {
             if (IsReadOnly) throw EXCEPTION_READ_ONLY;
             var item = _list[index];
-            _list.RemoveAt(index);
-            ItemRemoved?.Invoke(this, new ListItemRemovedEventArgs<T>(index, item));
+            OnRemove(index, item, () => { _list.RemoveAt(index); return true; });
         }
 
         /// <summary>
@@ -279,8 +348,64 @@
         public void Clear()
         {
             if (IsReadOnly) throw EXCEPTION_READ_ONLY;
-            this._list.Clear();
-            ItemCleard?.Invoke(this, new EventArgs());
+            OnClear(() => _list.Clear());
+        }
+        #endregion
+
+
+        #region Move Item Functions
+        /// <summary>
+        /// Moves the element at the specified index of the <see cref="EventedList{T}"/>.
+        /// </summary>
+        /// <param name="originalIndex">
+        /// The zero-based original index of the element to move.
+        /// </param>
+        /// <param name="newIndex">
+        /// The zero-based new index of the element to move.
+        /// </param>
+        /// <returns>
+        /// <see langword="true"/> if item is successfully moved;
+        /// otherwise, <see langword="false"/>.
+        /// </returns>
+        public bool Move(int originalIndex, int newIndex)
+        {
+            if (newIndex < 0 || newIndex >= _list.Count) return false;
+            if (originalIndex < 0 || originalIndex >= _list.Count) return false;
+            var item = _list[originalIndex];
+            OnMove(item, originalIndex, newIndex, () =>
+            {
+                _list.RemoveAt(originalIndex);
+                _list.Insert(newIndex, item);
+            });
+            return true;
+        }
+
+        /// <summary>
+        /// Moves the element at the specified index of the <see cref="EventedList{T}"/>.
+        /// </summary>
+        /// <param name="originalIndex">
+        /// The zero-based original index of the element to move.
+        /// </param>
+        /// <param name="newIndex">
+        /// The zero-based new index of the element to move.
+        /// </param>
+        /// <returns>
+        /// <see langword="true"/> if item is successfully moved;
+        /// otherwise, <see langword="false"/>.
+        /// This method also returns <see langword="false"/>
+        /// if item was not found in the <see cref="EventedList{T}"/>.
+        /// </returns>
+        public bool Move(T item, int newIndex)
+        {
+            if (newIndex < 0 || newIndex >= _list.Count) return false;
+            var originalIndex = _list.IndexOf(item);
+            if (originalIndex < 0) return false;
+            OnMove(item, originalIndex, newIndex, () =>
+            {
+                _list.RemoveAt(originalIndex);
+                _list.Insert(newIndex, item);
+            });
+            return true;
         }
         #endregion
 
@@ -305,8 +430,7 @@
         public void Reverse(int index, int count)
         {
             if (IsReadOnly) throw EXCEPTION_READ_ONLY;
-            this._list.Reverse(index, count);
-            ItemReversed?.Invoke(this, new ListRangeItemChangedEventArgs(index, count));
+            OnReverse(index, count, () => _list.Reverse(index, count));
         }
 
         /// <summary>
@@ -318,8 +442,7 @@
         public void Reverse()
         {
             if (IsReadOnly) throw EXCEPTION_READ_ONLY;
-            _list.Reverse();
-            ItemReversed?.Invoke(this, new ListRangeItemChangedEventArgs(0, _list.Count));
+            OnReverse(0, _list.Count, () => _list.Reverse());
         }
 
         /// <summary>
@@ -354,8 +477,7 @@
         public void Sort(int index, int count, IComparer<T> comparer)
         {
             if (IsReadOnly) throw EXCEPTION_READ_ONLY;
-            _list.Sort(index, count, comparer);
-            ItemSorted?.Invoke(this, new ListRangeItemChangedEventArgs(index, count));
+            OnSort(index, count, () => _list.Sort(index, count, comparer));
         }
 
         /// <summary>
@@ -378,8 +500,7 @@
         public void Sort(IComparer<T> comparer)
         {
             if (IsReadOnly) throw EXCEPTION_READ_ONLY;
-            _list.Sort(comparer);
-            ItemSorted?.Invoke(this, new ListRangeItemChangedEventArgs(0, _list.Count));
+            OnSort(0, _list.Count, () => _list.Sort(comparer));
         }
 
         /// <summary>
@@ -402,8 +523,7 @@
         public void Sort(Comparison<T> comparer)
         {
             if (IsReadOnly) throw EXCEPTION_READ_ONLY;
-            _list.Sort(comparer);
-            ItemSorted?.Invoke(this, new ListRangeItemChangedEventArgs(0, _list.Count));
+            OnSort(0, _list.Count, () => _list.Sort(comparer));
         }
 
         /// <summary>
@@ -419,8 +539,7 @@
         public void Sort()
         {
             if (IsReadOnly) throw EXCEPTION_READ_ONLY;
-            _list.Sort();
-            ItemSorted?.Invoke(this, new ListRangeItemChangedEventArgs(0, _list.Count));
+            OnSort(0, _list.Count, () => _list.Sort());
         }
         #endregion
 

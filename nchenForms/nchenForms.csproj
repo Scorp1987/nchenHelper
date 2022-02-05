@@ -69,10 +69,6 @@
     <Compile Include="CollectionControl.Designer.cs">
       <DependentUpon>CollectionControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Args\BeforeChangeArgs.cs" />
-    <Compile Include="Args\ChangedArgs.cs" />
-    <Compile Include="Args\ICancelArgs.cs" />
-    <Compile Include="Args\IChangedArgs.cs" />
     <Compile Include="Attributes\ControlValueAttribute.cs" />
     <Compile Include="Attributes\FilePathEditorAttribute.cs" />
     <Compile Include="Attributes\FormAttribute.cs" />
