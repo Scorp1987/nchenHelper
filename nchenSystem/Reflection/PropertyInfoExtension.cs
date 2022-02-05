@@ -40,9 +40,6 @@ namespace System.Reflection
         /// <see cref="MemberInfo.Name"/> if <see cref="DataColumnInfoAttribute.Name"/> is <see langword="null"/>,
         /// otherwise <see cref="DataColumnInfoAttribute.Name"/>
         /// </returns>
-        /// <exception cref="ColumnInfoAttributeNotFoundException{TObject}">
-        /// Can't find <see cref="ColumnInfoAttributeNotFoundException{TObject}"/> attribute in property with <paramref name="propertyName"/>
-        /// </exception>
         public static string GetDataTableColumnName<TAttribute>(this PropertyInfo property)
             where TAttribute : DataColumnInfoAttribute
         {
@@ -60,11 +57,7 @@ namespace System.Reflection
 
         private static TAttribute GetAttribute<TAttribute>(this PropertyInfo property)
             where TAttribute : DataColumnInfoAttribute
-        {
-            var attribute = property.GetCustomAttributes<TAttribute>().FirstOrDefault();
-            if (attribute == null) throw new ColumnInfoAttributeNotFoundException<TAttribute>(property.Name);
-            return attribute;
-        }
+            => property.GetCustomAttributes<TAttribute>().FirstOrDefault();
 
         private static string GetDbDataType(this PropertyInfo property, DataColumnInfoAttribute attribute)
         {
