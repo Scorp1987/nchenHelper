@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nchenForms", "nchenForms\nc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nchenLogger", "nchenLogger\nchenLogger.csproj", "{172CC12A-CF7D-40A2-B678-D877D368FAE7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nchenJson", "nchenJson\nchenJson.csproj", "{148AC1D8-8B6D-4F15-8446-78E35A1C980E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{172CC12A-CF7D-40A2-B678-D877D368FAE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{172CC12A-CF7D-40A2-B678-D877D368FAE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{172CC12A-CF7D-40A2-B678-D877D368FAE7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{148AC1D8-8B6D-4F15-8446-78E35A1C980E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{148AC1D8-8B6D-4F15-8446-78E35A1C980E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{148AC1D8-8B6D-4F15-8446-78E35A1C980E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{148AC1D8-8B6D-4F15-8446-78E35A1C980E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
