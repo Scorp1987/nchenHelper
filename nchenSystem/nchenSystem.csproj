@@ -42,15 +42,31 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Collections\Generic\EventedList.cs" />
+    <Compile Include="Collections\Generic\EventedListEventArgs\ICount.cs" />
+    <Compile Include="Collections\Generic\EventedListEventArgs\IValue.cs" />
+    <Compile Include="Collections\Generic\EventedListEventArgs\ListItemMovedEventArgs.cs" />
+    <Compile Include="Collections\Generic\EventedListEventArgs\ListItemMovingEventArgs.cs" />
     <Compile Include="Collections\Generic\IDictionaryExtension.cs" />
-    <Compile Include="Collections\Generic\ListItemAddedEventArgs.cs" />
-    <Compile Include="Collections\Generic\ListItemChangedEventArgs.cs" />
-    <Compile Include="Collections\Generic\ListItemRemovedEventArgs.cs" />
-    <Compile Include="Collections\Generic\ListRangeItemChangedEventArgs.cs" />
+    <Compile Include="Collections\Generic\EventedListEventArgs\IIndex.cs" />
+    <Compile Include="Collections\Generic\EventedListEventArgs\IndexValueCancelEventArgs.cs" />
+    <Compile Include="Collections\Generic\EventedListEventArgs\IndexValueEventArgs.cs" />
+    <Compile Include="Collections\Generic\EventedListEventArgs\ListItemAddedEventArgs.cs" />
+    <Compile Include="Collections\Generic\EventedListEventArgs\ListItemAddingEventArgs.cs" />
+    <Compile Include="Collections\Generic\EventedListEventArgs\ListItemChangedEventArgs.cs" />
+    <Compile Include="Collections\Generic\EventedListEventArgs\ListItemChangingEventArgs.cs" />
+    <Compile Include="Collections\Generic\EventedListEventArgs\ListItemRemovedEventArgs.cs" />
+    <Compile Include="Collections\Generic\EventedListEventArgs\ListItemRemovingEventArgs.cs" />
+    <Compile Include="Collections\Generic\EventedListEventArgs\ListRangeItemChangedEventArgs.cs" />
+    <Compile Include="Collections\Generic\EventedListEventArgs\ListRangeItemChangingEventArgs.cs" />
     <Compile Include="ComponentModel\APropertyChanging.cs" />
     <Compile Include="ComponentModel\APropertyChangingChanged.cs" />
+    <Compile Include="ComponentModel\ChangedEventArgs.cs" />
+    <Compile Include="ComponentModel\ChangingEventArgs.cs" />
     <Compile Include="ComponentModel\ClearDateTimeConverter.cs" />
     <Compile Include="ComponentModel\FloatNumberConverter.cs" />
+    <Compile Include="ComponentModel\ICancelEventArgs.cs" />
+    <Compile Include="ComponentModel\IChangedEventArgs.cs" />
+    <Compile Include="ComponentModel\IChangingEventArgs.cs" />
     <Compile Include="ComponentModel\ISODateTimeConverter.cs" />
     <Compile Include="ComponentModel\PropertyChangedEventArgs.cs" />
     <Compile Include="ComponentModel\PropertyChangedEventArgsExtension.cs" />
@@ -73,6 +89,7 @@
     <Compile Include="DateTimeExtension.cs" />
     <Compile Include="IO\Attributes\DelimitedFileColumnInfoAttribute.cs" />
     <Compile Include="IO\ColumnInfoEnumerableExtension.cs" />
+    <Compile Include="IO\IniFile.cs" />
     <Compile Include="IO\StreamReaderExtension.cs" />
     <Compile Include="IO\StreamWriterExtension.cs" />
     <Compile Include="IO\Types\DelimitedFileColumnInfo.cs" />

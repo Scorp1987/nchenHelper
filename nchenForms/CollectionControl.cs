@@ -75,12 +75,12 @@ namespace System.Windows.Forms
 
 
         public event EventHandler<TObject> SelectedValueChanged;
-        public event EventHandler<CancelEventArgs> NewItemBeforeAdded;
-        public event EventHandler<TObject> NewItemAdded;
-        public event EventHandler<CancelEventArgs> ItemBeforeDeleted;
-        public event EventHandler<TObject> ItemDeleted;
-        public event EventHandler<CancelEventArgs> ItemBeforeMoved;
-        public event EventHandler<ItemMovedEventArgs<TObject>> ItemMoved;
+        public event EventHandler<ListItemAddingEventArgs<TObject>> NewItemAdding;
+        public event EventHandler<ListItemAddedEventArgs<TObject>> NewItemAdded;
+        public event EventHandler<ListItemRemovingEventArgs<TObject>> ItemRemoving;
+        public event EventHandler<ListItemRemovedEventArgs<TObject>> ItemRemoved;
+        public event EventHandler<ListItemMovingEventArgs<TObject>> ItemMoving;
+        public event EventHandler<ListItemMovedEventArgs<TObject>> ItemMoved;
 
 
         public void AddToolStripItem(ToolStripItem item) => ToolbarStrip.Items.Add(item);
@@ -98,30 +98,56 @@ namespace System.Windows.Forms
             this.SelectedValueChanged?.Invoke(this, obj);
         }
 
+        private void OnChangingChanged<TChangingEventArgs, TChangedEventArgs>(
+            Func<TChangingEventArgs> getChangingArgs, EventHandler<TChangingEventArgs> changingHandler, Action action,
+            Func<TChangedEventArgs> getChangedArgs, EventHandler<TChangedEventArgs> changedHandler)
+            where TChangingEventArgs : CancelEventArgs
+            where TChangedEventArgs : EventArgs
+        {
+            if(changingHandler != null)
+            {
+                var args = getChangingArgs();
+                changingHandler?.Invoke(this, args);
+                if (args.Cancel) return;
+            }
+            action();
+            changedHandler?.Invoke(this, getChangedArgs());
+        }
+
+        private void OnAdd(int index, TObject value, Action action)
+            => OnChangingChanged(
+                () => new ListItemAddingEventArgs<TObject>(index, value), NewItemAdding, action,
+                () => new ListItemAddedEventArgs<TObject>(index, value), NewItemAdded);
+        private void OnDelete(int index, TObject value, Action action)
+            => OnChangingChanged(
+                () => new ListItemRemovingEventArgs<TObject>(index, value), ItemRemoving, action,
+                () => new ListItemRemovedEventArgs<TObject>(index, value), ItemRemoved);
+        private void OnMove(TObject value, int originalIndex, int newIndex, Action action)
+            => OnChangingChanged(
+                () => new ListItemMovingEventArgs<TObject>(value, originalIndex, newIndex), ItemMoving, action,
+                () => new ListItemMovedEventArgs<TObject>(value, originalIndex, newIndex), ItemMoved);
+
+
         private void AddToolStripButton_Click(object sender, EventArgs e)
         {
             var obj = this.DefaultProvider.GetDefault();
             if (!(obj is TObject)) return;
 
-            var arg = new CancelEventArgs();
-            NewItemBeforeAdded?.Invoke(this, arg);
-            if (arg.Cancel) return;
-            this.CollectionListBox.SelectedValueChanged -= CollectionListBox_SelectedValueChanged;
-            this.BindingSource.Add(obj);
-            NewItemAdded?.Invoke(this, obj);
-            this.CollectionListBox.SelectedItem = obj;
-            this.CollectionListBox.SelectedValueChanged += CollectionListBox_SelectedValueChanged;
+            var index = this.BindingSource.Count;
+            OnAdd(index, obj, () =>
+            {
+                this.CollectionListBox.SelectedValueChanged -= CollectionListBox_SelectedValueChanged;
+                this.BindingSource.Add(obj);
+                this.CollectionListBox.SelectedItem = obj;
+                this.CollectionListBox.SelectedValueChanged += CollectionListBox_SelectedValueChanged;
+            });
         }
 
         private void DeleteToolStripButton_Click(object sender, EventArgs e)
         {
             if (!(this.CollectionListBox.SelectedItem is TObject obj)) return;
-
-            var arg = new CancelEventArgs();
-            ItemBeforeDeleted?.Invoke(this, arg);
-            if (arg.Cancel) return;
-            this.BindingSource.Remove(obj);
-            ItemDeleted?.Invoke(this, obj);
+            var index = this.CollectionListBox.SelectedIndex;
+            OnDelete(index, obj, () => this.BindingSource.Remove(obj));
         }
 
         private void MoveItem(int offset)
@@ -134,16 +160,13 @@ namespace System.Windows.Forms
             if (newIndex < 0) return;
             if (newIndex > this.BindingSource.Count - 1) return;
 
-            var arg = new CancelEventArgs();
-            ItemBeforeMoved?.Invoke(this, arg);
-            if (arg.Cancel) return;
-            this.CollectionListBox.SelectedValueChanged -= CollectionListBox_SelectedValueChanged;
-            this.BindingSource.Remove(obj);
-            this.BindingSource.Insert(orgIndex + offset, obj);
-            this.CollectionListBox.SelectedItem = obj;
-            this.CollectionListBox.SelectedValueChanged += CollectionListBox_SelectedValueChanged;
-
-            ItemMoved?.Invoke(this, new ItemMovedEventArgs<TObject>(obj, orgIndex, newIndex));
+            OnMove(obj, orgIndex, newIndex, () =>
+            {
+                this.CollectionListBox.SelectedValueChanged -= CollectionListBox_SelectedValueChanged;
+                this.BindingSource.Remove(obj);
+                this.BindingSource.Insert(orgIndex + offset, obj);
+                this.CollectionListBox.SelectedItem = obj;
+            });
         }
 
         private void MoveFirstToolStripButton_Click(object sender, EventArgs e) => MoveItem(-this.CollectionListBox.SelectedIndex);

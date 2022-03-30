@@ -18,10 +18,10 @@ namespace System.Windows.Forms
 
         #region Data Events
         [Category("Data")]
-        public event CustomEventHandler<BeforeChangeArgs<FormStatusType>> FormStatusBeforeChange;
+        public event CustomEventHandler<ChangingEventArgs<FormStatusType>> FormStatusChanging;
 
         [Category("Data")]
-        public event CustomEventHandler<ChangedArgs<FormStatusType>> FormStatusChanged;
+        public event CustomEventHandler<ChangedEventArgs<FormStatusType>> FormStatusChanged;
 
         [Category("Data")]
         public event CustomEventHandler<CancelEventArgs> RefreshDataEvent;
@@ -407,13 +407,13 @@ namespace System.Windows.Forms
             get => _formStatus;
             set
             {
-                var arg = new BeforeChangeArgs<FormStatusType>(this._formStatus, value);
-                FormStatusBeforeChange?.Invoke(this, arg);
+                var arg = new ChangingEventArgs<FormStatusType>(this._formStatus, value);
+                FormStatusChanging?.Invoke(this, arg);
                 if (arg.Cancel) return;
                 var oldStatus = _formStatus;
                 _formStatus = value;
                 this.RefreshControls();
-                FormStatusChanged?.Invoke(this, new ChangedArgs<FormStatusType>(oldStatus, value));
+                FormStatusChanged?.Invoke(this, new ChangedEventArgs<FormStatusType>(oldStatus, value));
             }
         }
 

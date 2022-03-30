@@ -1,13 +1,13 @@
 ﻿namespace System.ComponentModel
 {
-    public class PropertyChangingCancelEventArgs : PropertyChangingEventArgs
+    public class PropertyChangingCancelEventArgs : PropertyChangingEventArgs, ICancelEventArgs
     {
         public PropertyChangingCancelEventArgs(string propertyName) : base(propertyName) { }
 
         public bool Cancel { get; set; }
     }
 
-    public class PropertyChangingCancelEventArgs<T> : PropertyChangingCancelEventArgs
+    public class PropertyChangingCancelEventArgs<T> : PropertyChangingCancelEventArgs, IChangingEventArgs<T>
     {
         public PropertyChangingCancelEventArgs(string propertyName, T originalValue, T newValue) : base(propertyName)
         {
