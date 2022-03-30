@@ -39,12 +39,14 @@ namespace Microsoft.VisualBasic.FileIO
             if (columnNames == null) return new DelimitedFileColumnInfo[0];
             var toreturn = new DelimitedFileColumnInfo[columnNames.Length];
             for (var i = 0; i < columnNames.Length; i++)
-            {
-                var item = new DelimitedFileColumnInfo { Name = columnNames[i], Index = i };
-                toreturn[i] = item;
-            }
+                toreturn[i] = new DelimitedFileColumnInfo
+                {
+                    Name = columnNames[i],
+                    Index = i
+                };
             return toreturn;
         }
+
         /// <summary>
         /// Get Column Information of all property in object of TObject type
         /// </summary>
@@ -54,17 +56,20 @@ namespace Microsoft.VisualBasic.FileIO
         public static DelimitedFileColumnInfo[] GetColumnInfos<TObject>(this TextFieldParser parser)
         {
             var columnInfos = parser.GetColumnInfos();
-            return (from columnInfo in columnInfos
-                    join property in typeof(TObject).GetProperties()
-                    on columnInfo.Name equals property.GetCustomAttributes<DelimitedFileColumnNameAttribute>().FirstOrDefault()?.Name ?? property.Name into gp1
-                    from property in gp1.DefaultIfEmpty(null)
-                    select new DelimitedFileColumnInfo
-                    {
-                        Name = columnInfo.Name,
-                        Index = columnInfo.Index,
-                        Property = property
-                    }).ToArray();
+            columnInfos.AsParallel().ForAll(columnInfo => columnInfo.Property = typeof(TObject).GetProperty(columnInfo.Name));
+            return columnInfos;
+            //return (from columnInfo in columnInfos
+            //        join property in typeof(TObject).GetProperties()
+            //        on columnInfo.Name equals property.GetCustomAttributes<DelimitedFileColumnNameAttribute>().FirstOrDefault()?.Name ?? property.Name into gp1
+            //        from property in gp1.DefaultIfEmpty(null)
+            //        select new DelimitedFileColumnInfo
+            //        {
+            //            Name = columnInfo.Name,
+            //            Index = columnInfo.Index,
+            //            Property = property
+            //        }).ToArray();
         }
+
         /// <summary>
         /// Get Column Informations of property with TAttribute attribute type for object of TObject type
         /// </summary>
@@ -73,24 +78,26 @@ namespace Microsoft.VisualBasic.FileIO
         /// <param name="parser"></param>
         /// <returns>Array of Column Informations</returns>
         public static DelimitedFileColumnInfo[] GetColumnInfos<TObject, TAttribute>(this TextFieldParser parser)
-            where TAttribute : DelimitedFileColumnNameAttribute
+            where TAttribute : DelimitedFileColumnInfoAttribute
         {
             var columnInfos = parser.GetColumnInfos();
-            var properties = from property in typeof(TObject).GetProperties()
-                             let attribute = property.GetCustomAttributes<TAttribute>().FirstOrDefault()
-                             where attribute != null
-                             select property;
+            columnInfos.AsParallel().ForAll(columnInfo => columnInfo.Property = typeof(TObject).GetDelimitedFileProperty<TAttribute>(columnInfo));
+            return columnInfos;
+            //var properties = from property in typeof(TObject).GetProperties()
+            //                 let attribute = property.GetCustomAttributes<TAttribute>().FirstOrDefault()
+            //                 where attribute != null
+            //                 select property;
 
-            return (from columnInfo in columnInfos
-                    join property in properties
-                    on columnInfo.Name equals property.GetCustomAttributes<TAttribute>().FirstOrDefault()?.Name ?? property.Name into gp1
-                    from property in gp1.DefaultIfEmpty(null)
-                    select new DelimitedFileColumnInfo
-                    {
-                        Name = columnInfo.Name,
-                        Index = columnInfo.Index,
-                        Property = property
-                    }).ToArray();
+            //return (from columnInfo in columnInfos
+            //        join property in properties
+            //        on columnInfo.Name equals property.GetCustomAttributes<TAttribute>().FirstOrDefault()?.Name ?? property.Name into gp1
+            //        from property in gp1.DefaultIfEmpty(null)
+            //        select new DelimitedFileColumnInfo
+            //        {
+            //            Name = columnInfo.Name,
+            //            Index = columnInfo.Index,
+            //            Property = property
+            //        }).ToArray();
         }
         #endregion
 
@@ -111,7 +118,7 @@ namespace Microsoft.VisualBasic.FileIO
                 if (columnInfo.Property == null) continue;
 
                 var converter = columnInfo.Property.GetTypeConverter();
-                var value = converter.ConvertFrom(data[columnInfo.Index]);
+                var value = converter.ConvertFrom(data[columnInfo.Index.Value]);
                 columnInfo.Property.SetValue(item, value);
             }
         }
@@ -127,7 +134,7 @@ namespace Microsoft.VisualBasic.FileIO
             var dic = item as IDictionary<string, object>;
             foreach (var columnInfo in columnInfos)
             {
-                var value = data[columnInfo.Index];
+                var value = data[columnInfo.Index.Value];
                 dic[columnInfo.Name] = value;
             }
         }
@@ -207,7 +214,7 @@ namespace Microsoft.VisualBasic.FileIO
         /// <param name="collection">Destination Collection</param>
         public static void AddToCollection<TObject, TAttribute>(this TextFieldParser parser, ICollection<TObject> collection)
             where TObject : new()
-            where TAttribute : DelimitedFileColumnNameAttribute
+            where TAttribute : DelimitedFileColumnInfoAttribute
         {
             var columnInfos = parser.GetColumnInfos<TObject, TAttribute>();
             parser.AddToCollection(collection, columnInfos);
@@ -287,7 +294,7 @@ namespace Microsoft.VisualBasic.FileIO
         public static TCollection GetCollection<TCollection, TObject, TAttribute>(this TextFieldParser parser)
             where TCollection : ICollection<TObject>, new()
             where TObject : new()
-            where TAttribute : DelimitedFileColumnNameAttribute
+            where TAttribute : DelimitedFileColumnInfoAttribute
         {
             var toreturn = new TCollection();
             parser.AddToCollection<TObject, TAttribute>(toreturn);
@@ -325,7 +332,7 @@ namespace Microsoft.VisualBasic.FileIO
         /// <returns>Return Filled Hashset</returns>
         public static HashSet<TObject> GetHashSet<TObject, TAttribute>(this TextFieldParser parser)
             where TObject : new()
-            where TAttribute : DelimitedFileColumnNameAttribute
+            where TAttribute : DelimitedFileColumnInfoAttribute
         {
             return parser.GetCollection<HashSet<TObject>, TObject, TAttribute>();
         }
@@ -394,7 +401,7 @@ namespace Microsoft.VisualBasic.FileIO
         /// <returns>Return Filled List</returns>
         public static List<TObject> GetList<TObject, TAttribute>(this TextFieldParser parser)
             where TObject : new()
-            where TAttribute : DelimitedFileColumnNameAttribute
+            where TAttribute : DelimitedFileColumnInfoAttribute
         {
             return parser.GetCollection<List<TObject>, TObject, TAttribute>();
         }
@@ -488,7 +495,7 @@ namespace Microsoft.VisualBasic.FileIO
         /// <param name="getKey">Function to get TKey from TObject</param>
         public static void AddToDictionary<TKey, TObject, TAttribute>(this TextFieldParser parser, IDictionary<TKey, TObject> dictionary, Func<TObject, TKey> getKey)
             where TObject : new()
-            where TAttribute : DelimitedFileColumnNameAttribute
+            where TAttribute : DelimitedFileColumnInfoAttribute
         {
             var columnInfos = parser.GetColumnInfos<TObject, TAttribute>();
             parser.AddToDictionary(dictionary, columnInfos, getKey);
@@ -590,7 +597,7 @@ namespace Microsoft.VisualBasic.FileIO
         /// <returns>Return filled Dictionary</returns>
         public static Dictionary<TKey, TObject> GetDictionary<TKey, TObject, TAttribute>(this TextFieldParser parser, Func<TObject, TKey> getKey)
             where TObject : new()
-            where TAttribute : DelimitedFileColumnNameAttribute
+            where TAttribute : DelimitedFileColumnInfoAttribute
         {
             var toreturn = new Dictionary<TKey, TObject>();
             parser.AddToDictionary<TKey, TObject, TAttribute>(toreturn, getKey);

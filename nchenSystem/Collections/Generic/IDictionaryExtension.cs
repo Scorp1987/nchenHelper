@@ -1,5 +1,4 @@
 ﻿using System.IO.Types;
-using System.Reflection;
 
 namespace System.Collections.Generic
 {
@@ -17,15 +16,16 @@ namespace System.Collections.Generic
         /// <returns>return true if found and updated successfully otherwise false</returns>
         public static bool UpdateObject<TKey, TObject>(this IDictionary<TKey, TObject> dictionary, string[] fields, IEnumerable<DelimitedFileColumnInfo> columnInfos, DelimitedFileColumnInfo keyColumn)
         {
-            var key = (TKey)Convert.ChangeType(fields[keyColumn.Index], typeof(TKey));
+            var key = (TKey)Convert.ChangeType(fields[keyColumn.Index.Value], typeof(TKey));
             if (!dictionary.TryGetValue(key, out var item))
                 return false;
-            foreach (var columnInfo in columnInfos)
-            {
-                var converter = columnInfo.Property.GetTypeConverter();
-                var value = converter.ConvertFrom(fields[columnInfo.Index]);
-                columnInfo.Property.SetValue(item, value);
-            }
+            item.UpdateObject(columnInfos, fields);
+            //foreach (var columnInfo in columnInfos)
+            //{
+            //    var converter = columnInfo.Property.GetTypeConverter();
+            //    var value = converter.ConvertFrom(fields[columnInfo.Index.Value]);
+            //    columnInfo.Property.SetValue(item, value);
+            //}
             return true;
         }
     }

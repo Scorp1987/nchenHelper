@@ -67,10 +67,11 @@
     <Compile Include="Data\Exceptions\EmptyDataTypeException.cs" />
     <Compile Include="Data\Exceptions\PropertyInfoNotFoundException.cs" />
     <Compile Include="Data\SqlClient\SqlBulkCopyExtension.cs" />
+    <Compile Include="Data\SqlClient\SqlCommandExtension.cs" />
+    <Compile Include="Data\SqlClient\SqlDataReaderExtension.cs" />
     <Compile Include="Data\Types\PropertyAttributeInfo.cs" />
     <Compile Include="DateTimeExtension.cs" />
-    <Compile Include="IO\Attributes\DelimitedFileColumnIndexAttribute.cs" />
-    <Compile Include="IO\Attributes\DelimitedFileColumnNameAttribute.cs" />
+    <Compile Include="IO\Attributes\DelimitedFileColumnInfoAttribute.cs" />
     <Compile Include="IO\ColumnInfoEnumerableExtension.cs" />
     <Compile Include="IO\StreamReaderExtension.cs" />
     <Compile Include="IO\StreamWriterExtension.cs" />

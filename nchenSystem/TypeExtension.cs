@@ -62,6 +62,29 @@ namespace System
 
             return property.GetDataTableColumnName<TAttribute>();
         }
+
+        /// <summary>
+        /// Get the Property with <typeparamref name="TAttribute"/>
+        /// </summary>
+        /// <typeparam name="TAttribute">
+        /// <see cref="DataColumnInfoAttribute"/> type for the property
+        /// </typeparam>
+        /// <param name="type"></param>
+        /// <param name="columnName"></param>
+        /// <returns>
+        /// <paramref name="propertyName"/> if <see cref="DataColumnInfoAttribute.Name"/> is <see langword="null"/>,
+        /// otherwise <see cref="DataColumnInfoAttribute.Name"/>
+        /// </returns>
+        public static PropertyInfo GetDataTableProperty<TAttribute>(this Type type, string columnName)
+            where TAttribute : DataColumnInfoAttribute
+        {
+            type.CheckClass();
+            var query = from property in type.GetProperties()
+                        let cname = property.GetDataTableColumnName<TAttribute>()
+                        where cname == columnName
+                        select property;
+            return query.FirstOrDefault();
+        }
         #endregion
 
 
@@ -70,53 +93,134 @@ namespace System
         {
             type.CheckClass();
             var query = from property in type.GetProperties()
-                        let attribute = property.GetCustomAttributes<DelimitedFileColumnIndexAttribute>().FirstOrDefault()
-                        where attribute != null
+                            //let attribute = property.GetCustomAttributes<DelimitedFileColumnIndexAttribute>().FirstOrDefault()
+                            //where attribute != null
                         select new DelimitedFileColumnInfo
                         {
                             Name = property.Name,
-                            Index = attribute.Index,
+                            //Index = attribute.Index,
                             Property = property
                         };
 
             return query.ToArray();
         }
 
-        public static DelimitedFileColumnInfo[] GetDelimitedFileColumnInfos<TIndexAttribute>(this Type type)
-            where TIndexAttribute : DelimitedFileColumnIndexAttribute
+        public static DelimitedFileColumnInfo[] GetDelimitedFileColumnInfos<TAttribute>(this Type type)
+            where TAttribute : DelimitedFileColumnInfoAttribute
         {
             type.CheckClass();
+            //var properties = from property in type.GetProperties()
+            //                 let attribute = property.GetCustomAttributes<TAttribute>().FirstOrDefault()
+            //                 where attribute != null
+            //                 orderby attribute.Index
+            //                 select new { property, attribute };
+
+            //var maxIndex = (from info in properties
+            //                select info.attribute?.Index).Max();
+            //if (maxIndex == null) return new DelimitedFileColumnInfo[0];
+
+            //var toReturn = new DelimitedFileColumnInfo[maxIndex.Value + 1];
+            //var emulator = properties.GetEnumerator();
+            //for (int i = 0; i <= maxIndex; i++)
+            //{
+            //    if (emulator.MoveNext())
+            //    {
+            //        toReturn[i] = new DelimitedFileColumnInfo
+            //        {
+            //            Name = string.IsNullOrEmpty(emulator.Current.attribute.Name) ? emulator.Current.property.Name : emulator.Current.attribute.Name,
+            //            Index = i,
+            //            Property = emulator.Current.property
+            //        };
+            //    }
+            //    else
+            //    {
+            //        toReturn[i] = new DelimitedFileColumnInfo
+            //        {
+            //            Name = "",
+            //            Index = i,
+            //            Property = null
+            //        };
+            //    }
+            //}
+            //return toReturn;
+
             var query = from property in type.GetProperties()
-                        let attribute = property.GetCustomAttributes<TIndexAttribute>().FirstOrDefault()
+                        let attribute = property.GetCustomAttributes<TAttribute>().FirstOrDefault()
                         where attribute != null
+                        orderby attribute.Index
                         select new DelimitedFileColumnInfo
                         {
-                            Name = property.Name,
+                            Name = string.IsNullOrEmpty(attribute.Name) ? property.Name : attribute.Name,
                             Index = attribute.Index,
                             Property = property
                         };
-
             return query.ToArray();
         }
 
-        public static DelimitedFileColumnInfo[] GetDelimitedFileColumnInfos<TIndexAttribute, TNameAttribute>(this Type type)
-            where TIndexAttribute : DelimitedFileColumnIndexAttribute
-            where TNameAttribute : DelimitedFileColumnNameAttribute
+        public static PropertyInfo GetDelimitedFileProperty<TAttribute>(this Type type, DelimitedFileColumnInfo columnInfo)
+            where TAttribute : DelimitedFileColumnInfoAttribute
         {
             type.CheckClass();
             var query = from property in type.GetProperties()
-                        let indexAttribute = property.GetCustomAttributes<TIndexAttribute>().FirstOrDefault()
-                        let nameAttribute = property.GetCustomAttributes<TNameAttribute>().FirstOrDefault()
-                        where indexAttribute != null && nameAttribute != null
-                        select new DelimitedFileColumnInfo
-                        {
-                            Name = nameAttribute.Name ?? property.Name,
-                            Index = indexAttribute.Index,
-                            Property = property
-                        };
-
-            return query.ToArray();
+                        let attribute = property.GetAttribute<TAttribute>()
+                        where attribute != null
+                        where (attribute.Index.HasValue && attribute.Index.Value == columnInfo.Index.Value) ||
+                            (attribute.Name != null && attribute.Name == columnInfo.Name) ||
+                            (string.IsNullOrEmpty(attribute.Name) && property.Name == columnInfo.Name)
+                        select property;
+            return query.FirstOrDefault();
         }
+
+        //public static DelimitedFileColumnInfo[] GetDelimitedFileColumnInfosByIndex<TIndexAttribute>(this Type type)
+        //    where TIndexAttribute : DelimitedFileColumnIndexAttribute
+        //{
+        //    type.CheckClass();
+        //    var query = from property in type.GetProperties()
+        //                let attribute = property.GetCustomAttributes<TIndexAttribute>().FirstOrDefault()
+        //                where attribute != null
+        //                select new DelimitedFileColumnInfo
+        //                {
+        //                    Name = property.Name,
+        //                    Index = attribute.Index,
+        //                    Property = property
+        //                };
+
+        //    return query.ToArray();
+        //}
+
+        //public static DelimitedFileColumnInfo[] GetDelimitedFileColumnInfosByName<TNameAttribute>(this Type type)
+        //    where TNameAttribute : DelimitedFileColumnNameAttribute
+        //{
+        //    type.CheckClass();
+        //    var query = from property in type.GetProperties()
+        //                let attribute = property.GetCustomAttributes<TNameAttribute>().FirstOrDefault()
+        //                where attribute != null
+        //                select new DelimitedFileColumnInfo
+        //                {
+        //                    Name = property.Name,
+        //                    Property = property
+        //                };
+        //    return query.ToArray();
+        //}
+
+        //public static DelimitedFileColumnInfo[] GetDelimitedFileColumnInfos<TIndexAttribute, TNameAttribute>(this Type type)
+        //    where TIndexAttribute : DelimitedFileColumnIndexAttribute
+        //    where TNameAttribute : DelimitedFileColumnNameAttribute
+        //{
+        //    type.CheckClass();
+        //    var query = from property in type.GetProperties()
+        //                let indexAttribute = property.GetCustomAttributes<TIndexAttribute>().FirstOrDefault()
+        //                let nameAttribute = property.GetCustomAttributes<TNameAttribute>().FirstOrDefault()
+        //                where indexAttribute != null && nameAttribute != null
+        //                select new DelimitedFileColumnInfo
+        //                {
+        //                    Name = nameAttribute.Name ?? property.Name,
+        //                    Index = indexAttribute.Index,
+        //                    Property = property
+        //                };
+
+        //    return query.ToArray();
+        //}
         #endregion
 
 

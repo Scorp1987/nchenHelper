@@ -79,35 +79,38 @@ namespace System.IO
 
 
         #region Get Column Names
-        private static string[] GetColumnNames<TObject>()
-        {
-            var query = from property in typeof(TObject).GetProperties()
-                        let attribute = property.GetCustomAttributes<DelimitedFileColumnNameAttribute>().FirstOrDefault()
-                        select attribute?.Name ?? property.Name;
-            return query.ToArray();
-        }
-        private static string[] GetColumnNames<TObject, TAttribute>()
-            where TAttribute : DelimitedFileColumnNameAttribute
-        {
-            var query = from property in typeof(TObject).GetProperties()
-                        let attribute = property.GetCustomAttribute<TAttribute>()
-                        where attribute != null
-                        select attribute.Name ?? property.Name;
-            return query.ToArray();
-        }
-        private static string[] GetColumnNames(IEnumerable<dynamic> collection)
+        //private static IEnumerable<string> GetColumnNames<TObject>()
+        //{
+        //    var query = from property in typeof(TObject).GetProperties()
+        //                let attribute = property.GetCustomAttributes<DelimitedFileColumnNameAttribute>().FirstOrDefault()
+        //                select attribute?.Name ?? property.Name;
+        //    return query;
+        //    //return query.ToArray();
+        //}
+        //private static IEnumerable<string> GetColumnNames<TObject, TAttribute>()
+        //    where TAttribute : DelimitedFileColumnNameAttribute
+        //{
+        //    var query = from property in typeof(TObject).GetProperties()
+        //                let attribute = property.GetCustomAttribute<TAttribute>()
+        //                where attribute != null
+        //                select attribute.Name ?? property.Name;
+        //    return query;
+        //    //return query.ToArray();
+        //}
+        private static IEnumerable<string> GetColumnNames(IEnumerable<dynamic> collection)
         {
             var query = from item in collection
                         from name in (item is IDictionary<string, object> dic) ? dic.Keys : ((Type)item.GetType()).GetProperties().Select(p => p.Name)
                         group name by name into gp1
                         select gp1.Key;
-            return query.ToArray();
+            return query;
+            //return query.ToArray();
         }
         #endregion
 
 
         private static IEnumerable<PropertyInfo> GetProperties<TObject, TAttribute>()
-            where TAttribute : DelimitedFileColumnNameAttribute
+            where TAttribute : DelimitedFileColumnInfoAttribute
         {
             return from property in typeof(TObject).GetProperties()
                    let attribute = property.GetCustomAttribute<TAttribute>()
@@ -167,63 +170,76 @@ namespace System.IO
         #endregion
 
 
-        #region Get column names and write a row to delimited stream
-        /// <summary>
-        /// Write name of TObject's properties to delimited stream
-        /// </summary>
-        /// <typeparam name="TObject"></typeparam>
-        /// <param name="writer">Destination Stream Writer</param>
-        /// <param name="delimiter">Delimiter to seperate values</param>
-        public static void WriteFields<TObject>(this StreamWriter writer, string delimiter)
-            where TObject : class
-        {
-            var names = GetColumnNames<TObject>();
-            writer.WriteFields(delimiter, names);
-        }
-        /// <summary>
-        /// Write name of TObject's properties to delimited stream
-        /// </summary>
-        /// <typeparam name="TObject"></typeparam>
-        /// <param name="writer">Destination Stream Writer</param>
-        /// <param name="delimiter">Delimiter to seperate values</param>
-        /// <returns></returns>
-        public static Task WriteFieldsAsync<TObject>(this StreamWriter writer, string delimiter)
-            where TObject : class
-        {
-            var names = GetColumnNames<TObject>();
-            return writer.WriteFieldsAsync(delimiter, names);
-        }
+        //#region Get column names and write a row to delimited stream
+        ///// <summary>
+        ///// Write name of TObject's properties to delimited stream
+        ///// </summary>
+        ///// <typeparam name="TObject"></typeparam>
+        ///// <param name="writer">Destination Stream Writer</param>
+        ///// <param name="delimiter">Delimiter to seperate values</param>
+        //public static void WriteFields<TObject>(this StreamWriter writer, string delimiter)
+        //    where TObject : class
+        //{
+        //    var names = GetColumnNames<TObject>();
+        //    writer.WriteFields(delimiter, names);
+        //}
+        ///// <summary>
+        ///// Write name of TObject's properties to delimited stream
+        ///// </summary>
+        ///// <typeparam name="TObject"></typeparam>
+        ///// <param name="writer">Destination Stream Writer</param>
+        ///// <param name="delimiter">Delimiter to seperate values</param>
+        ///// <returns></returns>
+        //public static Task WriteFieldsAsync<TObject>(this StreamWriter writer, string delimiter)
+        //    where TObject : class
+        //{
+        //    var names = GetColumnNames<TObject>();
+        //    return writer.WriteFieldsAsync(delimiter, names);
+        //}
 
-        /// <summary>
-        /// Write name of TObject's properties with TAttribute to delimited stream
-        /// </summary>
-        /// <typeparam name="TObject"></typeparam>
-        /// <typeparam name="TAttribute"></typeparam>
-        /// <param name="writer">Destination Stream Writer</param>
-        /// <param name="delimiter">Delimiter to seperate values</param>
-        public static void WriteFields<TObject, TAttribute>(this StreamWriter writer, string delimiter)
-            where TObject : class
-            where TAttribute : DelimitedFileColumnNameAttribute
+        ///// <summary>
+        ///// Write name of TObject's properties with TAttribute to delimited stream
+        ///// </summary>
+        ///// <typeparam name="TObject"></typeparam>
+        ///// <typeparam name="TAttribute"></typeparam>
+        ///// <param name="writer">Destination Stream Writer</param>
+        ///// <param name="delimiter">Delimiter to seperate values</param>
+        //public static void WriteFields<TObject, TAttribute>(this StreamWriter writer, string delimiter)
+        //    where TObject : class
+        //    where TAttribute : DelimitedFileColumnNameAttribute
+        //{
+        //    var names = GetColumnNames<TObject, TAttribute>();
+        //    writer.WriteFields(delimiter, names);
+        //}
+        ///// <summary>
+        ///// Write name of TObject's properties with TAttribute to delimited stream
+        ///// </summary>
+        ///// <typeparam name="TObject"></typeparam>
+        ///// <typeparam name="TAttribute"></typeparam>
+        ///// <param name="writer">Destination Stream Writer</param>
+        ///// <param name="delimiter">Delimiter to seperate values</param>
+        ///// <returns></returns>
+        //public static Task WriteFieldsAsync<TObject, TAttribute>(this StreamWriter writer, string delimiter)
+        //    where TObject : class
+        //    where TAttribute : DelimitedFileColumnNameAttribute
+        //{
+        //    var names = GetColumnNames<TObject, TAttribute>();
+        //    return writer.WriteFieldsAsync(delimiter, names);
+        //}
+        //#endregion
+
+        public static void WriteColumnNames(this StreamWriter writer, string delimiter, IEnumerable<DelimitedFileColumnInfo> columnInfos)
         {
-            var names = GetColumnNames<TObject, TAttribute>();
-            writer.WriteFields(delimiter, names);
+            var query = from columnInfo in columnInfos
+                        select columnInfo.Name;
+            writer.WriteFields(delimiter, query);
         }
-        /// <summary>
-        /// Write name of TObject's properties with TAttribute to delimited stream
-        /// </summary>
-        /// <typeparam name="TObject"></typeparam>
-        /// <typeparam name="TAttribute"></typeparam>
-        /// <param name="writer">Destination Stream Writer</param>
-        /// <param name="delimiter">Delimiter to seperate values</param>
-        /// <returns></returns>
-        public static Task WriteFieldsAsync<TObject, TAttribute>(this StreamWriter writer, string delimiter)
-            where TObject : class
-            where TAttribute : DelimitedFileColumnNameAttribute
+        public static async Task WriteColumnNamesAsync(this StreamWriter writer, string delimiter, IEnumerable<DelimitedFileColumnInfo> columnInfos)
         {
-            var names = GetColumnNames<TObject, TAttribute>();
-            return writer.WriteFieldsAsync(delimiter, names);
+            var query = from columnInfo in columnInfos
+                        select columnInfo.Name;
+            await writer.WriteFieldsAsync(delimiter, query);
         }
-        #endregion
 
 
         #region Write a row of values from object property to delimited stream
@@ -313,75 +329,75 @@ namespace System.IO
             return writer.WriteFieldsAsync(delimiter, obj, properties);
         }
 
-        /// <summary>
-        /// Write values of TObject's properties to delimited stream
-        /// </summary>
-        /// <typeparam name="TObject"></typeparam>
-        /// <param name="writer">Destination Stream Writer</param>
-        /// <param name="delimiter">Delimiter to seperate values</param>
-        /// <param name="obj">Source object</param>
-        public static void WriteFields<TObject>(this StreamWriter writer, string delimiter, TObject obj)
-            where TObject : class
-        {
-            if (obj is IEnumerable arr)
-                writer.WriteFields(delimiter, arr);
-            else
-            {
-                var properties = typeof(TObject).GetProperties();
-                writer.WriteFields(delimiter, obj, properties);
-            }
-        }
-        /// <summary>
-        /// Write values of TObject's properties to delimited stream
-        /// </summary>
-        /// <typeparam name="TObject"></typeparam>
-        /// <param name="writer">Destination Stream Writer</param>
-        /// <param name="delimiter">Delimiter to seperate values</param>
-        /// <param name="obj">Source object</param>
-        /// <returns></returns>
-        public static Task WriteFieldsAsync<TObject>(this StreamWriter writer, string delimiter, TObject obj)
-            where TObject : class
-        {
-            if (obj is IEnumerable arr)
-                return writer.WriteFieldsAsync(delimiter, arr);
-            else
-            {
-                var properties = typeof(TObject).GetProperties();
-                return writer.WriteFieldsAsync(delimiter, obj, properties);
-            }
-        }
+        ///// <summary>
+        ///// Write values of TObject's properties to delimited stream
+        ///// </summary>
+        ///// <typeparam name="TObject"></typeparam>
+        ///// <param name="writer">Destination Stream Writer</param>
+        ///// <param name="delimiter">Delimiter to seperate values</param>
+        ///// <param name="obj">Source object</param>
+        //public static void WriteFields<TObject>(this StreamWriter writer, string delimiter, TObject obj)
+        //    where TObject : class
+        //{
+        //    if (obj is IEnumerable arr)
+        //        writer.WriteFields(delimiter, arr);
+        //    else
+        //    {
+        //        var properties = typeof(TObject).GetProperties();
+        //        writer.WriteFields(delimiter, obj, properties);
+        //    }
+        //}
+        ///// <summary>
+        ///// Write values of TObject's properties to delimited stream
+        ///// </summary>
+        ///// <typeparam name="TObject"></typeparam>
+        ///// <param name="writer">Destination Stream Writer</param>
+        ///// <param name="delimiter">Delimiter to seperate values</param>
+        ///// <param name="obj">Source object</param>
+        ///// <returns></returns>
+        //public static Task WriteFieldsAsync<TObject>(this StreamWriter writer, string delimiter, TObject obj)
+        //    where TObject : class
+        //{
+        //    if (obj is IEnumerable arr)
+        //        return writer.WriteFieldsAsync(delimiter, arr);
+        //    else
+        //    {
+        //        var properties = typeof(TObject).GetProperties();
+        //        return writer.WriteFieldsAsync(delimiter, obj, properties);
+        //    }
+        //}
 
-        /// <summary>
-        /// Write values of TObject's properties with TAttribute to delimited stream
-        /// </summary>
-        /// <typeparam name="TObject"></typeparam>
-        /// <typeparam name="TAttribute"></typeparam>
-        /// <param name="writer">Destination Stream Writer</param>
-        /// <param name="delimiter">Delimiter to seperate values</param>
-        /// <param name="obj">Source object</param>
-        public static void WriteFields<TObject, TAttribute>(this StreamWriter writer, string delimiter, TObject obj)
-            where TObject : class
-            where TAttribute : DelimitedFileColumnNameAttribute
-        {
-            var properties = GetProperties<TObject, TAttribute>();
-            writer.WriteFields(delimiter, obj, properties);
-        }
-        /// <summary>
-        /// Write values of TObject's properties with TAttribute to delimited stream
-        /// </summary>
-        /// <typeparam name="TObject"></typeparam>
-        /// <typeparam name="TAttribute"></typeparam>
-        /// <param name="writer">Destination Stream Writer</param>
-        /// <param name="delimiter">Delimiter to seperate values</param>
-        /// <param name="obj">Source object</param>
-        /// <returns></returns>
-        public static Task WriteFieldsAsync<TObject, TAttribute>(this StreamWriter writer, string delimiter, TObject obj)
-            where TObject : class
-            where TAttribute : DelimitedFileColumnNameAttribute
-        {
-            var properties = GetProperties<TObject, TAttribute>();
-            return writer.WriteFieldsAsync(delimiter, obj, properties);
-        }
+        ///// <summary>
+        ///// Write values of TObject's properties with TAttribute to delimited stream
+        ///// </summary>
+        ///// <typeparam name="TObject"></typeparam>
+        ///// <typeparam name="TAttribute"></typeparam>
+        ///// <param name="writer">Destination Stream Writer</param>
+        ///// <param name="delimiter">Delimiter to seperate values</param>
+        ///// <param name="obj">Source object</param>
+        //public static void WriteFields<TObject, TAttribute>(this StreamWriter writer, string delimiter, TObject obj)
+        //    where TObject : class
+        //    where TAttribute : DelimitedFileColumnNameAttribute
+        //{
+        //    var properties = GetProperties<TObject, TAttribute>();
+        //    writer.WriteFields(delimiter, obj, properties);
+        //}
+        ///// <summary>
+        ///// Write values of TObject's properties with TAttribute to delimited stream
+        ///// </summary>
+        ///// <typeparam name="TObject"></typeparam>
+        ///// <typeparam name="TAttribute"></typeparam>
+        ///// <param name="writer">Destination Stream Writer</param>
+        ///// <param name="delimiter">Delimiter to seperate values</param>
+        ///// <param name="obj">Source object</param>
+        ///// <returns></returns>
+        //public static Task WriteFieldsAsync<TObject, TAttribute>(this StreamWriter writer, string delimiter, TObject obj)
+        //    where TObject : class
+        //    where TAttribute : DelimitedFileColumnNameAttribute
+        //{
+        //    var properties = GetProperties<TObject, TAttribute>();
+        //    return writer.WriteFieldsAsync(delimiter, obj, properties);
+        //}
 
         /// <summary>
         /// Write values of dynamic object properties to delimited stream
@@ -437,41 +453,41 @@ namespace System.IO
             }
         }
 
-        /// <summary>
-        /// Write values of dynamic object properties to delimited stream
-        /// </summary>
-        /// <param name="writer">Destination Stream Writer</param>
-        /// <param name="delimiter">Delimiter to seperate values</param>
-        /// <param name="obj">Source object</param>
-        public static void WriteFields(this StreamWriter writer, string delimiter, dynamic obj)
-        {
-            if (obj is IDictionary<string, object> dic)
-                writer.WriteFields(delimiter, (IEnumerable)dic.Values);
-            else
-            {
-                var values = from property in ((Type)obj.GetType()).GetProperties()
-                             select property.GetValue(obj);
-                writer.WriteFields(delimiter, (IEnumerable)values);
-            }
-        }
-        /// <summary>
-        /// Write values of dynamic object properties to delimited stream
-        /// </summary>
-        /// <param name="writer">Destination Stream Writer</param>
-        /// <param name="delimiter">Delimiter to seperate values</param>
-        /// <param name="obj">Source object</param>
-        /// <returns></returns>
-        public static Task WriteFieldsAsync(this StreamWriter writer, string delimiter, dynamic obj)
-        {
-            if (obj is IDictionary<string, object> dic)
-                return writer.WriteFieldsAsync(delimiter, (IEnumerable)dic.Values);
-            else
-            {
-                var values = from property in ((Type)obj.GetType()).GetProperties()
-                             select property.GetValue(obj);
-                return writer.WriteFieldsAsync(delimiter, (IEnumerable)values);
-            }
-        }
+        ///// <summary>
+        ///// Write values of dynamic object properties to delimited stream
+        ///// </summary>
+        ///// <param name="writer">Destination Stream Writer</param>
+        ///// <param name="delimiter">Delimiter to seperate values</param>
+        ///// <param name="obj">Source object</param>
+        //public static void WriteFields(this StreamWriter writer, string delimiter, dynamic obj)
+        //{
+        //    if (obj is IDictionary<string, object> dic)
+        //        writer.WriteFields(delimiter, (IEnumerable)dic.Values);
+        //    else
+        //    {
+        //        var values = from property in ((Type)obj.GetType()).GetProperties()
+        //                     select property.GetValue(obj);
+        //        writer.WriteFields(delimiter, (IEnumerable)values);
+        //    }
+        //}
+        ///// <summary>
+        ///// Write values of dynamic object properties to delimited stream
+        ///// </summary>
+        ///// <param name="writer">Destination Stream Writer</param>
+        ///// <param name="delimiter">Delimiter to seperate values</param>
+        ///// <param name="obj">Source object</param>
+        ///// <returns></returns>
+        //public static Task WriteFieldsAsync(this StreamWriter writer, string delimiter, dynamic obj)
+        //{
+        //    if (obj is IDictionary<string, object> dic)
+        //        return writer.WriteFieldsAsync(delimiter, (IEnumerable)dic.Values);
+        //    else
+        //    {
+        //        var values = from property in ((Type)obj.GetType()).GetProperties()
+        //                     select property.GetValue(obj);
+        //        return writer.WriteFieldsAsync(delimiter, (IEnumerable)values);
+        //    }
+        //}
         #endregion
 
 
@@ -487,11 +503,13 @@ namespace System.IO
         public static void WriteCollection<TObject>(this StreamWriter writer, string delimiter, IEnumerable<TObject> collection, bool writeHeader = true)
             where TObject : class
         {
+            var columnInfos = typeof(TObject).GetDelimitedFileColumnInfos();
             if (writeHeader)
-                writer.WriteFields<TObject>(delimiter);
+                writer.WriteColumnNames(delimiter, columnInfos);
+            //writer.WriteFields<TObject>(delimiter);
 
             foreach (var item in collection)
-                writer.WriteFields(delimiter, item);
+                writer.WriteFields(delimiter, item, columnInfos);
         }
         /// <summary>
         /// Write collection of TObject's properties' values to delimited stream
@@ -505,11 +523,13 @@ namespace System.IO
         public static async Task WriteCollectionAsync<TObject>(this StreamWriter writer, string delimiter, IEnumerable<TObject> collection, bool writeHeader = true)
             where TObject : class
         {
+            var columnInfos = typeof(TObject).GetDelimitedFileColumnInfos();
             if (writeHeader)
-                await writer.WriteFieldsAsync<TObject>(delimiter);
+                await writer.WriteColumnNamesAsync(delimiter, columnInfos);
+            //await writer.WriteFieldsAsync<TObject>(delimiter);
 
             foreach (var item in collection)
-                await writer.WriteFieldsAsync(delimiter, item);
+                await writer.WriteFieldsAsync(delimiter, item, columnInfos);
         }
 
         /// <summary>
@@ -523,13 +543,15 @@ namespace System.IO
         /// <param name="writeHeader">To write header row, set to true. Otherwise set to false</param>
         public static void WriteCollection<TObject, TAttribute>(this StreamWriter writer, string delimiter, IEnumerable<TObject> collection, bool writeHeader = true)
             where TObject : class
-            where TAttribute : DelimitedFileColumnNameAttribute
+            where TAttribute : DelimitedFileColumnInfoAttribute
         {
+            var columnInfos = typeof(TObject).GetDelimitedFileColumnInfos<TAttribute>();
             if (writeHeader)
-                writer.WriteFields<TObject, TAttribute>(delimiter);
+                writer.WriteColumnNames(delimiter, columnInfos);
+            //writer.WriteFields(",", columnNames);
 
             foreach (var item in collection)
-                writer.WriteFields<TObject, TAttribute>(delimiter, item);
+                writer.WriteFields(delimiter, item, columnInfos);
         }
         /// <summary>
         /// Write collection of TObject's properties' values with TAttribute to delimited stream
@@ -543,13 +565,15 @@ namespace System.IO
         /// <returns></returns>
         public static async Task WriteCollectionAsync<TObject, TAttribute>(this StreamWriter writer, string delimiter, IEnumerable<TObject> collection, bool writeHeader = true)
             where TObject : class
-            where TAttribute : DelimitedFileColumnNameAttribute
+            where TAttribute : DelimitedFileColumnInfoAttribute
         {
+            var columnInfos = typeof(TObject).GetDelimitedFileColumnInfos<TAttribute>();
             if (writeHeader)
-                await writer.WriteFieldsAsync<TObject, TAttribute>(delimiter);
+                await writer.WriteColumnNamesAsync(delimiter, columnInfos);
+            //await writer.WriteFieldsAsync<TObject, TAttribute>(delimiter);
 
             foreach (var item in collection)
-                await writer.WriteFieldsAsync<TObject, TAttribute>(delimiter, item);
+                await writer.WriteFieldsAsync(delimiter, item, columnInfos);
         }
 
         /// <summary>
@@ -563,7 +587,7 @@ namespace System.IO
         public static void WriteCollection(this StreamWriter writer, string delimiter, IEnumerable<dynamic> collection, IEnumerable<string> columnNames, bool writerHeader = true)
         {
             if (writerHeader)
-                writer.WriteFields(delimiter, (IEnumerable)columnNames);
+                writer.WriteFields(delimiter, columnNames);
 
             foreach (var item in collection)
                 WriteFields(writer, delimiter, item, columnNames);
@@ -580,7 +604,7 @@ namespace System.IO
         public static async Task WriteCollectionAsync(this StreamWriter writer, string delimiter, IEnumerable<dynamic> collection, IEnumerable<string> columnNames, bool writerHeader = true)
         {
             if (writerHeader)
-                await writer.WriteFieldsAsync(delimiter, (IEnumerable)columnNames);
+                await writer.WriteFieldsAsync(delimiter, columnNames);
 
             foreach (var item in collection)
                 await WriteFieldsAsync(writer, delimiter, item, columnNames);

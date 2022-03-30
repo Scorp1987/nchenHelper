@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Data.Attributes;
 using System.Data.Exceptions;
+using System.IO.Attributes;
 using System.Linq;
 
 namespace System.Reflection
@@ -43,8 +44,7 @@ namespace System.Reflection
         public static string GetDataTableColumnName<TAttribute>(this PropertyInfo property)
             where TAttribute : DataColumnInfoAttribute
         {
-            var attribute = GetAttribute<TAttribute>(property);
-
+            var attribute = property.GetAttribute<TAttribute>();
             return attribute?.Name ?? property.Name;
         }
 
@@ -55,8 +55,22 @@ namespace System.Reflection
             return GetDbDataType(property, attribute);
         }
 
-        private static TAttribute GetAttribute<TAttribute>(this PropertyInfo property)
-            where TAttribute : DataColumnInfoAttribute
+        public static string GetDelimitedFileColumnName<TAttribute>(this PropertyInfo property)
+            where TAttribute : DelimitedFileColumnInfoAttribute
+        {
+            var attribute = property.GetAttribute<TAttribute>();
+            return attribute?.Name ?? property.Name;
+        }
+
+        public static int? GetDelimitedFileColumnIndex<TAttribute>(this PropertyInfo property)
+            where TAttribute : DelimitedFileColumnInfoAttribute
+        {
+            var attribute = property.GetAttribute<TAttribute>();
+            return attribute?.Index;
+        }
+
+        public static TAttribute GetAttribute<TAttribute>(this PropertyInfo property)
+            where TAttribute : Attribute
             => property.GetCustomAttributes<TAttribute>().FirstOrDefault();
 
         private static string GetDbDataType(this PropertyInfo property, DataColumnInfoAttribute attribute)

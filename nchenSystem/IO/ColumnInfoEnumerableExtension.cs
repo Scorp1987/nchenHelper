@@ -28,12 +28,12 @@ namespace System.IO
                     select columnInfo).FirstOrDefault();
         }
 
-        public static int GetMaxIndex(this IEnumerable<DelimitedFileColumnInfo> collection) => collection.Max(r => r.Index);
+        public static int GetMaxIndex(this IEnumerable<DelimitedFileColumnInfo> collection) => collection.Max(r => r.Index.Value);
 
         public static IEnumerable<PropertyInfo> GetPropertyInfos(this IEnumerable<DelimitedFileColumnInfo> collection)
         {
             return from columnInfo in collection
-                   orderby columnInfo.Index
+                       //orderby columnInfo.Index
                    select columnInfo.Property;
         }
     }

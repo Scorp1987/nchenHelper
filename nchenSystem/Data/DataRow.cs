@@ -219,7 +219,7 @@ namespace System.Data
         /// </exception>
         internal void UpdateObjValue(string columnName, object value)
         {
-            var info = this.Infos[columnName];
+            if (!this.Infos.TryGetValue(columnName, out var info)) return;
             if (value == Convert.DBNull) value = null;
             info.Property.SetValue(this.Values, value);
         }
