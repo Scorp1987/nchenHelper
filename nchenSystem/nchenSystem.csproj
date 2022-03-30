@@ -33,6 +33,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -87,12 +88,15 @@
     <Compile Include="Data\SqlClient\SqlDataReaderExtension.cs" />
     <Compile Include="Data\Types\PropertyAttributeInfo.cs" />
     <Compile Include="DateTimeExtension.cs" />
+    <Compile Include="Drawing\ImageExtension.cs" />
     <Compile Include="IO\Attributes\DelimitedFileColumnInfoAttribute.cs" />
     <Compile Include="IO\ColumnInfoEnumerableExtension.cs" />
     <Compile Include="IO\IniFile.cs" />
+    <Compile Include="IO\StreamExtension.cs" />
     <Compile Include="IO\StreamReaderExtension.cs" />
     <Compile Include="IO\StreamWriterExtension.cs" />
     <Compile Include="IO\Types\DelimitedFileColumnInfo.cs" />
+    <Compile Include="Drawing\BasicImageInfo.cs" />
     <Compile Include="Net\Mail\HtmlMailMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reflection\PropertyInfoExtension.cs" />
