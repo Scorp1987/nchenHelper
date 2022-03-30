@@ -25,10 +25,10 @@ namespace System.Collections.Generic
         private void OnChangingChanged<TChangingEventArgs, TChangedEventArgs>(
             Func<TChangingEventArgs> getChangingArgs, EventHandler<TChangingEventArgs> changingHandler, Action action,
             Func<TChangedEventArgs> getChangedArgs, EventHandler<TChangedEventArgs> changedHandler)
-            where TChangingEventArgs: CancelEventArgs
-            where TChangedEventArgs: EventArgs
+            where TChangingEventArgs : CancelEventArgs
+            where TChangedEventArgs : EventArgs
         {
-            if(changingHandler != null)
+            if (changingHandler != null)
             {
                 var args = getChangingArgs();
                 changingHandler?.Invoke(this, args);
@@ -50,7 +50,7 @@ namespace System.Collections.Generic
                 if (args.Cancel) return false;
             }
             var success = action();
-            if(success)
+            if (success)
                 changedHandler?.Invoke(this, getChangedArgs());
             return success;
         }

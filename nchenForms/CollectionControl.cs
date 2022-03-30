@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
-using System.Windows.Forms.Args;
 using System.Windows.Forms.Providers;
 
 namespace System.Windows.Forms
@@ -104,7 +103,7 @@ namespace System.Windows.Forms
             where TChangingEventArgs : CancelEventArgs
             where TChangedEventArgs : EventArgs
         {
-            if(changingHandler != null)
+            if (changingHandler != null)
             {
                 var args = getChangingArgs();
                 changingHandler?.Invoke(this, args);

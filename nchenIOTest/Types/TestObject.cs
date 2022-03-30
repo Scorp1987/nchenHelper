@@ -39,7 +39,7 @@ namespace System.IO.Types
         public string Text { get; set; }
 
         [WithoutName]
-        [DelimitedFileColumnName("DateName")]
+        [DelimitedFileColumnInfo("DateName")]
         public DateTime Date { get; set; }
 
         [WithoutName("DateTimeName")]

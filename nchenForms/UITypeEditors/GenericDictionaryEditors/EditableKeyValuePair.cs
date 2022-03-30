@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
-using System.Windows.Forms.Args;
 using System.Windows.Forms.Attributes;
 
 namespace System.Windows.Forms.UITypeEditors.GenericDictionaryEditors

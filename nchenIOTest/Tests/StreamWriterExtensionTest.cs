@@ -49,17 +49,6 @@ namespace System.IO.Tests
             TestWriteFields_Values("TestDates-\"2021-12-22\"-\"2021-11-21 20:01:02\"\r\n", toWrite, "-");
         }
 
-        [TestMethod]
-        public void TestWriteFields_ColumnNames()
-        {
-            TestStreamWriter("TextName,Date,DateTimeName,NullableDateTime,Number,NullableNumber,ObjectName\r\n", w => w.WriteFields<TestObject>(","));
-            TestStreamWriter("TextName,Date,DateTimeName,NullableDateTime,Number,NullableNumber,ObjectName\r\n", w => w.WriteFieldsAsync<TestObject>(","));
-            TestStreamWriter("Text,Date,DateTimeName,NullableNumber\r\n", w => w.WriteFields<TestObject, WithoutNameAttribute>(","));
-            TestStreamWriter("Text,Date,DateTimeName,NullableNumber\r\n", w => w.WriteFieldsAsync<TestObject, WithoutNameAttribute>(","));
-            TestStreamWriter("TextName,ObjectName\r\n", w => w.WriteFields<TestObject, WithNameAttribute>(","));
-            TestStreamWriter("TextName,ObjectName\r\n", w => w.WriteFieldsAsync<TestObject, WithNameAttribute>(","));
-        }
-
 
         private readonly TestObject TestObject1 = new TestObject
         {
@@ -110,31 +99,13 @@ namespace System.IO.Tests
         }
 
         [TestMethod]
-        public void TestWriteFields_Object2()
-        {
-            TestStreamWriter("TestObject1,2021-11-12,2021-12-22 15:14:20,2021-12-15 16:47:16.205,10,5.6,TestSubObject1|15\r\n", w => w.WriteFields(",", TestObject1));
-            TestStreamWriter("TestObject1,2021-11-12,2021-12-22 15:14:20,2021-12-15 16:47:16.205,10,5.6,TestSubObject1|15\r\n", w => w.WriteFieldsAsync(",", TestObject1));
-            TestStreamWriter("TestObject2|2021-10-12|2020-12-22 15:14:20||5||\"TestSubObject2|14\"\r\n", w => w.WriteFields("|", TestObject2));
-            TestStreamWriter("TestObject2|2021-10-12|2020-12-22 15:14:20||5||\"TestSubObject2|14\"\r\n", w => w.WriteFieldsAsync("|", TestObject2));
-        }
-
-        [TestMethod]
-        public void TestWriteFields_Object3()
-        {
-            TestStreamWriter("TestObject1,2021-11-12,2021-12-22 15:14:20,5.6\r\n", w => w.WriteFields<TestObject, WithoutNameAttribute>(",", TestObject1));
-            TestStreamWriter("TestObject1,2021-11-12,2021-12-22 15:14:20,5.6\r\n", w => w.WriteFieldsAsync<TestObject, WithoutNameAttribute>(",", TestObject1));
-            TestStreamWriter("TestObject2,TestSubObject2|14\r\n", w => w.WriteFields<TestObject, WithNameAttribute>(",", TestObject2));
-            TestStreamWriter("TestObject2,TestSubObject2|14\r\n", w => w.WriteFieldsAsync<TestObject, WithNameAttribute>(",", TestObject2));
-        }
-
-        [TestMethod]
         public void TestWriteCollection_Object2()
         {
             var objects = new TestObject[] { TestObject1, TestObject2 };
             TestStreamWriter("TestObject1,2021-11-12,2021-12-22 15:14:20,2021-12-15 16:47:16.205,10,5.6,TestSubObject1|15\r\nTestObject2,2021-10-12,2020-12-22 15:14:20,,5,,TestSubObject2|14\r\n", w => w.WriteCollection(",", objects, false));
             TestStreamWriter("TestObject1,2021-11-12,2021-12-22 15:14:20,2021-12-15 16:47:16.205,10,5.6,TestSubObject1|15\r\nTestObject2,2021-10-12,2020-12-22 15:14:20,,5,,TestSubObject2|14\r\n", w => w.WriteCollectionAsync(",", objects, false));
-            TestStreamWriter("TextName,Date,DateTimeName,NullableDateTime,Number,NullableNumber,ObjectName\r\nTestObject1,2021-11-12,2021-12-22 15:14:20,2021-12-15 16:47:16.205,10,5.6,TestSubObject1|15\r\nTestObject2,2021-10-12,2020-12-22 15:14:20,,5,,TestSubObject2|14\r\n", w => w.WriteCollection(",", objects, true));
-            TestStreamWriter("TextName,Date,DateTimeName,NullableDateTime,Number,NullableNumber,ObjectName\r\nTestObject1,2021-11-12,2021-12-22 15:14:20,2021-12-15 16:47:16.205,10,5.6,TestSubObject1|15\r\nTestObject2,2021-10-12,2020-12-22 15:14:20,,5,,TestSubObject2|14\r\n", w => w.WriteCollectionAsync(",", objects, true));
+            TestStreamWriter("Text,Date,DateTime,NullableDateTime,Number,NullableNumber,Object\r\nTestObject1,2021-11-12,2021-12-22 15:14:20,2021-12-15 16:47:16.205,10,5.6,TestSubObject1|15\r\nTestObject2,2021-10-12,2020-12-22 15:14:20,,5,,TestSubObject2|14\r\n", w => w.WriteCollection(",", objects, true));
+            TestStreamWriter("Text,Date,DateTime,NullableDateTime,Number,NullableNumber,Object\r\nTestObject1,2021-11-12,2021-12-22 15:14:20,2021-12-15 16:47:16.205,10,5.6,TestSubObject1|15\r\nTestObject2,2021-10-12,2020-12-22 15:14:20,,5,,TestSubObject2|14\r\n", w => w.WriteCollectionAsync(",", objects, true));
         }
 
         [TestMethod]

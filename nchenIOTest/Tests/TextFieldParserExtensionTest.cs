@@ -91,7 +91,7 @@ namespace System.IO.Tests
         [TestMethod]
         public void TestGetColumnInfoReadObjectUpdateObject2()
         {
-            var str = "TextName,Date,DateTimeName,OtherColumn,NullableDateTime,Number,NullableNumber,ObjectName\r\nTestObject1,2021-11-12,2021-12-22 15:14:20,OtherRow1,2021-12-15 16:47:16.205,10,5.6,TestSubObject1|15\r\nTestObject2,2021-10-12,2020-12-22 15:14:20,OtherRow2,,5,,TestSubObject2|14\r\n";
+            var str = "Text,Date,DateTime,OtherColumn,NullableDateTime,Number,NullableNumber,Object\r\nTestObject1,2021-11-12,2021-12-22 15:14:20,OtherRow1,2021-12-15 16:47:16.205,10,5.6,TestSubObject1|15\r\nTestObject2,2021-10-12,2020-12-22 15:14:20,OtherRow2,,5,,TestSubObject2|14\r\n";
 
             using (var stream = new MemoryStream())
             using (var writer = new StreamWriter(stream))
@@ -105,14 +105,14 @@ namespace System.IO.Tests
                 var type = typeof(TestObject);
                 for (var i = 0; i < columnInfos.Length; i++)
                     Assert.AreEqual(i, columnInfos[i].Index);
-                Assert.AreEqual("TextName", columnInfos[0].Name);
+                Assert.AreEqual("Text", columnInfos[0].Name);
                 Assert.AreEqual("Date", columnInfos[1].Name);
-                Assert.AreEqual("DateTimeName", columnInfos[2].Name);
+                Assert.AreEqual("DateTime", columnInfos[2].Name);
                 Assert.AreEqual("OtherColumn", columnInfos[3].Name);
                 Assert.AreEqual("NullableDateTime", columnInfos[4].Name);
                 Assert.AreEqual("Number", columnInfos[5].Name);
                 Assert.AreEqual("NullableNumber", columnInfos[6].Name);
-                Assert.AreEqual("ObjectName", columnInfos[7].Name);
+                Assert.AreEqual("Object", columnInfos[7].Name);
                 Assert.AreEqual(type.GetProperty(nameof(TestObject.Text)), columnInfos[0].Property);
                 Assert.AreEqual(type.GetProperty(nameof(TestObject.Date)), columnInfos[1].Property);
                 Assert.AreEqual(type.GetProperty(nameof(TestObject.DateTime)), columnInfos[2].Property);

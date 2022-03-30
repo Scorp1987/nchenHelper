@@ -2,7 +2,7 @@
 
 namespace System.Collections.Generic
 {
-    public class ListItemMovingEventArgs<T>: CancelEventArgs, IValue<T>
+    public class ListItemMovingEventArgs<T> : CancelEventArgs, IValue<T>
     {
         public ListItemMovingEventArgs(T value, int originalIndex, int newIndex)
         {

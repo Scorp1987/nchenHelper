@@ -1,6 +1,6 @@
 ﻿namespace System.IO.Attributes
 {
-    class WithNameAttribute : DelimitedFileColumnNameAttribute
+    class WithNameAttribute : DelimitedFileColumnInfoAttribute
     {
         public WithNameAttribute(string name) : base(name) { }
     }
