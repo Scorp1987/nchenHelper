@@ -75,7 +75,6 @@ namespace System
             else return null;
         }
 
-
         public static DateTime? ToDateTime(this string str)
         {
             if (DateTime.TryParse(str, out var dt)) return dt;

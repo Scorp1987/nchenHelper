@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System.Attributes;
+using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data.Attributes;
 using System.Data.Types;
 using System.Linq;
 using System.Reflection;
@@ -242,7 +242,7 @@ namespace System.Data
     {
         public DataRow(DataRowBuilder builder) : base(builder) { }
 
-        protected override string GetColumnName(string propertyName) => typeof(TObject).GetDataTableColumnName<TAttribute>(propertyName);
+        protected override string GetColumnName(string propertyName) => typeof(TObject).GetProperty(propertyName).GetName<TAttribute>();
 
         internal override IEnumerable<PropertyAttributeInfo> GetInfos() =>
             from property in typeof(TObject).GetProperties()

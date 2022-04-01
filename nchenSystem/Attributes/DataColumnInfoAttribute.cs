@@ -1,16 +1,16 @@
-﻿
-namespace System.Data.Attributes
+﻿using System.Data;
+
+namespace System.Attributes
 {
     /// <summary>
     /// Column Information to be used in property of TObject
     /// </summary>
     [AttributeUsage(AttributeTargets.Property)]
-    public class DataColumnInfoAttribute : Attribute
+    public class DataColumnInfoAttribute : NamedAttribute
     {
-        /// <summary>
-        /// Column Name
-        /// </summary>
-        public string Name { get; set; }
+        public DataColumnInfoAttribute() { }
+
+        public DataColumnInfoAttribute(string name) : base(name) { }
 
         public string Expression { get; set; }
 

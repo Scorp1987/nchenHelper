@@ -1,7 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System.Attributes;
+using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data.Attributes;
-using System.Data.SqlClient;
 using System.Data.Types;
 using System.Linq;
 using System.Reflection;
@@ -153,18 +152,6 @@ namespace System.Data
         }
 
         /// <summary>
-        /// Effienctly copies all rows in the supplied
-        /// <see cref="DataTable{TObject}"/> to a destination table
-        /// </summary>
-        /// <param name="conn"><see cref="SqlConnection"/> object</param>
-        /// <param name="tableName">name of the table in the server</param>
-        public virtual void BulkWriteToServer(SqlConnection conn, string tableName)
-        {
-            var columnNames = typeof(TObject).GetProperties().Select(p => p.Name);
-            this.BulkWriteToServer(conn, tableName, columnNames);
-        }
-
-        /// <summary>
         /// Creates a new instance of <see cref="DataRow{TObject}"/>.
         /// </summary>
         /// <returns>The new expression.</returns>
@@ -260,12 +247,6 @@ namespace System.Data
         public new DataRow<TObject, TAttribute> this[int index] => (DataRow<TObject, TAttribute>)this.Rows[index];
 
         public void AddDataRow(DataRow<TObject, TAttribute> row) => this.Rows.Add(row);
-
-        public override void BulkWriteToServer(SqlConnection conn, string tableName)
-        {
-            var columnNames = typeof(TObject).GetDataTableColumnNames<TAttribute>();
-            this.BulkWriteToServer(conn, tableName, columnNames);
-        }
 
         protected override DataTable CreateInstance() => new DataTable<TObject, TAttribute>();
 

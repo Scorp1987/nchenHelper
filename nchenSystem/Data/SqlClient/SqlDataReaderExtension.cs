@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 
 namespace System.Data.SqlClient
 {
+    internal delegate PropertyInfo GetPropertyFunction(string columnName);
+
     public static class SqlDataReaderExtension
     {
         internal static List<PropertyInfo> GetProperties(this SqlDataReader reader, GetPropertyFunction getProperty)
@@ -31,7 +33,6 @@ namespace System.Data.SqlClient
             if (!reader.Read()) return default;
             return reader.GetObject<TObject>(propertyInfos);
         }
-
         public static async Task<TObject> ReadObjectAsync<TObject>(this SqlDataReader reader, IList<PropertyInfo> propertyInfos)
             where TObject : new()
         {

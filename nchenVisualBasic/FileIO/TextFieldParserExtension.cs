@@ -1,10 +1,11 @@
 ﻿using Microsoft.VisualBasic.FileIO;
 using System;
+using System.Attributes;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
 using System.Dynamic;
 using System.IO;
-using System.IO.Attributes;
-using System.IO.Types;
 using System.Linq;
 using System.Reflection;
 
@@ -83,21 +84,6 @@ namespace Microsoft.VisualBasic.FileIO
             var columnInfos = parser.GetColumnInfos();
             columnInfos.AsParallel().ForAll(columnInfo => columnInfo.Property = typeof(TObject).GetDelimitedFileProperty<TAttribute>(columnInfo));
             return columnInfos;
-            //var properties = from property in typeof(TObject).GetProperties()
-            //                 let attribute = property.GetCustomAttributes<TAttribute>().FirstOrDefault()
-            //                 where attribute != null
-            //                 select property;
-
-            //return (from columnInfo in columnInfos
-            //        join property in properties
-            //        on columnInfo.Name equals property.GetCustomAttributes<TAttribute>().FirstOrDefault()?.Name ?? property.Name into gp1
-            //        from property in gp1.DefaultIfEmpty(null)
-            //        select new DelimitedFileColumnInfo
-            //        {
-            //            Name = columnInfo.Name,
-            //            Index = columnInfo.Index,
-            //            Property = property
-            //        }).ToArray();
         }
         #endregion
 
@@ -236,7 +222,7 @@ namespace Microsoft.VisualBasic.FileIO
             while (!parser.EndOfData)
             {
                 var item = parser.ReadDynamic(columnInfos);
-                var value = getValue(item);
+                var value = (TValue)getValue(item);
                 collection.Add(value);
             }
         }
@@ -257,6 +243,53 @@ namespace Microsoft.VisualBasic.FileIO
             }
         }
         #endregion
+
+
+        public static void FillTable<TObject>(this TextFieldParser parser, DataTable<TObject> table, IEnumerable<DelimitedFileColumnInfo> columnInfos)
+            where TObject : INotifyPropertyChanging, new()
+        {
+            while (!parser.EndOfData)
+            {
+                var item = new TObject();
+                parser.UpdateObject(item, columnInfos);
+                table.AddDataRow(item);
+            }
+        }
+        public static void FillTable<TObject>(this TextFieldParser parser, DataTable<TObject> table)
+            where TObject : INotifyPropertyChanging, new()
+        {
+            var columnInfos = parser.GetColumnInfos<TObject>();
+            parser.FillTable(table, columnInfos);
+        }
+        public static void FillTable<TObject, TAttribute>(this TextFieldParser parser, DataTable<TObject> table)
+            where TObject: INotifyPropertyChanging, new()
+            where TAttribute : DelimitedFileColumnInfoAttribute
+        {
+            var columnInfos = parser.GetColumnInfos<TObject, TAttribute>();
+            parser.FillTable(table, columnInfos);
+        }
+        public static void FillTable<TValue>(this TextFieldParser parser, DataTable<TValue> table, Func<dynamic, TValue> getValue)
+            where TValue : INotifyPropertyChanging, new()
+        {
+            var columnInfos = parser.GetColumnInfos();
+
+            while (!parser.EndOfData)
+            {
+                var item = parser.ReadDynamic(columnInfos);
+                var value = (TValue)getValue(item);
+                table.AddDataRow(value);
+            }
+        }
+        //public static void FillTable(this TextFieldParser parser, DataTable table)
+        //{
+        //    var columnInfos = parser.GetColumnInfos();
+        //    foreach(var column)
+        //    while (!parser.EndOfData)
+        //    {
+        //        var item = parser.ReadDynamic(columnInfos);
+        //        collection.Add(item);
+        //    }
+        //}
 
 
         #region Create new Collection, Read Objects, Add To Collection, Return Collection

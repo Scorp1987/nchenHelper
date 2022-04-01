@@ -1,6 +1,4 @@
-﻿using System.Drawing;
-
-namespace System.Drawing
+﻿namespace System.Drawing
 {
     public class BasicImageInfo
     {

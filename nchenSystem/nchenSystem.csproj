@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\NamedAttribute.cs" />
     <Compile Include="Collections\Generic\EventedList.cs" />
     <Compile Include="Collections\Generic\EventedListEventArgs\ICount.cs" />
     <Compile Include="Collections\Generic\EventedListEventArgs\IValue.cs" />
@@ -73,8 +74,8 @@
     <Compile Include="ComponentModel\PropertyChangedEventArgsExtension.cs" />
     <Compile Include="ComponentModel\PropertyChangingCancelEventArgs.cs" />
     <Compile Include="ComponentModel\PropertyChangingEventArgsExtension.cs" />
-    <Compile Include="Data\Attributes\DataColumnInfoAttribute.cs" />
-    <Compile Include="Data\Attributes\StringDataColumnInfoAttribute.cs" />
+    <Compile Include="Attributes\DataColumnInfoAttribute.cs" />
+    <Compile Include="Attributes\StringDataColumnInfoAttribute.cs" />
     <Compile Include="Data\DataRow.cs" />
     <Compile Include="Data\DataRowChangeEventArgs.cs" />
     <Compile Include="Data\DataTable.cs">
@@ -85,17 +86,18 @@
     <Compile Include="Data\Exceptions\PropertyInfoNotFoundException.cs" />
     <Compile Include="Data\SqlClient\SqlBulkCopyExtension.cs" />
     <Compile Include="Data\SqlClient\SqlCommandExtension.cs" />
+    <Compile Include="Data\SqlClient\SqlConnectionExtension.cs" />
     <Compile Include="Data\SqlClient\SqlDataReaderExtension.cs" />
     <Compile Include="Data\Types\PropertyAttributeInfo.cs" />
     <Compile Include="DateTimeExtension.cs" />
     <Compile Include="Drawing\ImageExtension.cs" />
-    <Compile Include="IO\Attributes\DelimitedFileColumnInfoAttribute.cs" />
+    <Compile Include="Attributes\DelimitedFileColumnInfoAttribute.cs" />
     <Compile Include="IO\ColumnInfoEnumerableExtension.cs" />
     <Compile Include="IO\IniFile.cs" />
     <Compile Include="IO\StreamExtension.cs" />
     <Compile Include="IO\StreamReaderExtension.cs" />
     <Compile Include="IO\StreamWriterExtension.cs" />
-    <Compile Include="IO\Types\DelimitedFileColumnInfo.cs" />
+    <Compile Include="IO\DelimitedFileColumnInfo.cs" />
     <Compile Include="Drawing\BasicImageInfo.cs" />
     <Compile Include="Net\Mail\HtmlMailMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

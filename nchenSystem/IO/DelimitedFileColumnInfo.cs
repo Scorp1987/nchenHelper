@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace System.IO.Types
+namespace System.IO
 {
     public class DelimitedFileColumnInfo
     {

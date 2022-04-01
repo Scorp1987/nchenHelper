@@ -1,5 +1,5 @@
-﻿using System.ComponentModel;
-using System.Data.Attributes;
+﻿using System.Attributes;
+using System.ComponentModel;
 using System.Reflection;
 
 namespace System.Data.Types
