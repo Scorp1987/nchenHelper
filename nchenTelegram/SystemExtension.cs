@@ -8,10 +8,10 @@ namespace System
 {
     public static class SystemExtension
     {
-        private static readonly char[] CODE_SPECIAL_CHARACTERS = { '`', '\\' };
-        private static readonly char[] LINK_SPECIAL_CHARACTERS = { ')', '\\' };
+        private static readonly char[] CODE_SPECIAL_CHARACTERS = { '\\', '`' };
+        private static readonly char[] LINK_SPECIAL_CHARACTERS = { '\\', ')' };
         private static readonly char[] TEXT_SPECIAL_CHARACTERS = { '`', '>', '#', '+', '-', '=', '{', '}', '.', '!' };
-        private static readonly char[] OTHER_SPECIAL_CHARACTERS = { '_', '*', '[', ']', '(', ')', '~', '`', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!', '\\' };
+        private static readonly char[] OTHER_SPECIAL_CHARACTERS = { '\\', '_', '*', '[', ']', '(', ')', '~', '`', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!' };
 
         public static string ToText(this object value, IDictionary<Type, TypeConverter> converters = null)
         {
@@ -31,6 +31,14 @@ namespace System
                 input = input.Replace($"{specialChar}", $@"\{specialChar}");
             return input;
         }
+
+        public static string ToInlineCode(this string input) => $"`{input.FixInLineCode()}`";
+
+        public static string FixInLineCode(this string input) => input.ToMarkDownV2Text(CODE_SPECIAL_CHARACTERS);
+
+        public static string FixAllOthers(this string input) => input.ToMarkDownV2Text(OTHER_SPECIAL_CHARACTERS);
+
+        public static string FixText(this string input) => input.ToMarkDownV2Text(TEXT_SPECIAL_CHARACTERS);
 
         public static string ToFormatText(this string input, TextFormat format)
         {

@@ -83,6 +83,26 @@ namespace System.IO
             }
             catch { }
         }
+        public void WriteException(string taskName, Exception ex)
+        {
+            try
+            {
+                _expLog?.WriteLine($"{DateTime.Now:yyyy-MM-dd HH:mm:ss} | {ex.Message} occured at {taskName}");
+                _expLog?.WriteLine(ex.StackTrace);
+                _expLog?.WriteLine();
+            }
+            catch { }
+        }
+        public async Task WriteExceptionAsync(string taskName, Exception ex)
+        {
+            try
+            {
+                await _expLog?.WriteLineAsync($"{DateTime.Now:yyyy-MM-dd HH:mm:ss} | {ex.Message} occured at {taskName}");
+                await _expLog?.WriteLineAsync(ex.StackTrace);
+                await _expLog?.WriteLineAsync();
+            }
+            catch { }
+        }
         #endregion
 
 
@@ -105,16 +125,6 @@ namespace System.IO
             {
                 Console.WriteLine(message);
                 _applog?.WriteLine(message);
-            }
-            catch { }
-        }
-        private void WriteException(string taskName, Exception ex)
-        {
-            try
-            {
-                _expLog?.WriteLine($"{DateTime.Now:yyyy-MM-dd HH:mm:ss} | {ex.Message} occured at {taskName}");
-                _expLog?.WriteLine(ex.StackTrace);
-                _expLog?.WriteLine();
             }
             catch { }
         }

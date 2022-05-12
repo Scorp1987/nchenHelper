@@ -32,6 +32,6 @@
         /// </summary>
         /// <param name="dt"></param>
         /// <returns>string value to use in sqlStatement</returns>
-        public static string ToSqlValueString(this DateTime dt) => $"'{dt.ToRoundDownToMilliSecond():yyyy-MM-dd HH:mm:ss.fff}'";
+        public static string ToSqlValueString(this DateTime dt) => $"'{dt.ToRoundDownToSecond():yyyy-MM-dd HH:mm:ss}'";
     }
 }

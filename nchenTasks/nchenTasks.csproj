@@ -1,0 +1,135 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{6C129FFC-F5D9-40F7-91C7-DDC43D408A0A}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>nchen</RootNamespace>
+    <AssemblyName>nchenTasks</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AdaptiveCards.Templating, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\AdaptiveCards.Templating.1.2.2\lib\netstandard2.0\AdaptiveCards.Templating.dll</HintPath>
+    </Reference>
+    <Reference Include="AdaptiveExpressions, Version=4.11.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\AdaptiveExpressions.4.11.2\lib\netstandard2.0\AdaptiveExpressions.dll</HintPath>
+    </Reference>
+    <Reference Include="Antlr4.Runtime.Standard, Version=4.8.0.0, Culture=neutral, PublicKeyToken=e78b2c5abd1fcb3f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Antlr4.Runtime.Standard.4.8.0\lib\net35\Antlr4.Runtime.Standard.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Recognizers.Text.DataTypes.TimexExpression, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Recognizers.Text.DataTypes.TimexExpression.1.2.9\lib\net462\Microsoft.Recognizers.Text.DataTypes.TimexExpression.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.3\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Telegram.Bot, Version=17.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Telegram.Bot.17.0.0\lib\netstandard2.0\Telegram.Bot.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Channels\AChannel.cs" />
+    <Compile Include="Channels\EmailChannel.cs" />
+    <Compile Include="Channels\IChannel.cs" />
+    <Compile Include="Channels\MattermostChannel.cs" />
+    <Compile Include="Channels\TeamsChannel.cs" />
+    <Compile Include="Channels\TelegramChannel.cs" />
+    <Compile Include="Enums\ChannelType.cs" />
+    <Compile Include="Enums\TaskType.cs" />
+    <Compile Include="Enums\TemplateType.cs" />
+    <Compile Include="JsonConverters\IChannelJsonConverter.cs" />
+    <Compile Include="JsonConverters\ITaskJsonConverter.cs" />
+    <Compile Include="TaskHelper.cs" />
+    <Compile Include="JsonConverters\ITemplateJsonConverter.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tasks\AGetDataTask.cs" />
+    <Compile Include="Tasks\AssignJsonObjectTask.cs" />
+    <Compile Include="Tasks\AssignTextTask.cs" />
+    <Compile Include="Tasks\ATask.cs" />
+    <Compile Include="Tasks\ATasks.cs" />
+    <Compile Include="Tasks\ConcurrentTasks.cs" />
+    <Compile Include="Tasks\GetDateTimeTask.cs" />
+    <Compile Include="Tasks\ITask.cs" />
+    <Compile Include="Tasks\ListenNamedPipeTask.cs" />
+    <Compile Include="Tasks\RunProcessTask.cs" />
+    <Compile Include="Tasks\SaveJsonObjectTask.cs" />
+    <Compile Include="Tasks\SendToChannelTask.cs" />
+    <Compile Include="Tasks\SequentialTasks.cs" />
+    <Compile Include="Tasks\SqlQueryTask.cs" />
+    <Compile Include="Templates\EmailTemplate.cs" />
+    <Compile Include="Templates\ITemplate.cs" />
+    <Compile Include="Templates\MattermostTemplate.cs" />
+    <Compile Include="Templates\TeamsTemplate.cs" />
+    <Compile Include="Templates\TelegramTemplate.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\nchenAdaptiveCards\nchenAdaptiveCards.csproj">
+      <Project>{c1742337-05fb-4a1f-a06b-ba8cfc6caab9}</Project>
+      <Name>nchenAdaptiveCards</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\nchenJson\nchenJson.csproj">
+      <Project>{148ac1d8-8b6d-4f15-8446-78e35a1c980e}</Project>
+      <Name>nchenJson</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\nchenLogger\nchenLogger.csproj">
+      <Project>{172cc12a-cf7d-40a2-b678-d877d368fae7}</Project>
+      <Name>nchenLogger</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\nchenMail\nchenMail.csproj">
+      <Project>{379399fa-653f-4312-a294-317da069b0ed}</Project>
+      <Name>nchenMail</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\nchenSystem\nchenSystem.csproj">
+      <Project>{403db690-4b58-4d60-8113-0726b8218bd4}</Project>
+      <Name>nchenSystem</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\nchenTelegram\nchenTelegram.csproj">
+      <Project>{aa901314-0ffb-4543-8edd-94993d4da41d}</Project>
+      <Name>nchenTelegram</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+    <None Include="Schemas\nchenTaskSchema.json" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

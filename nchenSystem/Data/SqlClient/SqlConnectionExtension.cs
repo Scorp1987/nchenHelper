@@ -139,13 +139,13 @@ namespace System.Data.SqlClient
             where TAttribute : NamedAttribute
         {
             var columnNames = typeof(TObject).GetNames<TAttribute>();
-            conn.BulkWriteToServer(collection, tableName, columnNames);
+            conn.BulkWriteToServer<TObject, TAttribute>(collection, tableName, columnNames);
         }
         public static async Task BulkWriteToServerAsync<TObject, TAttribute>(this SqlConnection conn, IEnumerable<TObject> collection, string tableName)
             where TAttribute : NamedAttribute
         {
             var columnNames = typeof(TObject).GetNames<TAttribute>();
-            await conn.BulkWriteToServerAsync(collection, tableName, columnNames);
+            await conn.BulkWriteToServerAsync<TObject, TAttribute>(collection, tableName, columnNames);
         }
     }
 }

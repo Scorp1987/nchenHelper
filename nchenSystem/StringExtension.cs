@@ -69,6 +69,12 @@ namespace System
             else return float.NaN;
         }
 
+        public static double ToDouble(this string str)
+        {
+            if (double.TryParse(str, out var d)) return d;
+            else return double.NaN;
+        }
+
         public static decimal? ToDecimal(this string str)
         {
             if (decimal.TryParse(str, out var d)) return d;

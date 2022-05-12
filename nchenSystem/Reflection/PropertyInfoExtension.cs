@@ -1,6 +1,5 @@
 ﻿using System.Attributes;
 using System.ComponentModel;
-using System.Data.Exceptions;
 using System.Linq;
 
 namespace System.Reflection
@@ -87,7 +86,7 @@ namespace System.Reflection
             else if (dataType == typeof(Int32)) return "INT";
             else if (dataType == typeof(Int64)) return "BIGINT";
             else if (dataType == typeof(float)) return "FLOAT";
-            else if (dataType == typeof(double)) return "DOUBLE";
+            else if (dataType == typeof(double)) return "FLOAT";
             else if (dataType == typeof(string)) return $"VARCHAR(MAX)";
             else if (dataType == typeof(DateTime)) return "DATETIME";
             else throw new NotImplementedException($"{dataType.Name} is not implemented.");

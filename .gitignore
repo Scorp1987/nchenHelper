@@ -5,6 +5,7 @@
 /.vs
 /bin
 /packages
+/TestConsole
 /nchenIOTest/obj
 /nchenSystem/obj
 /nchenVisualBasic/obj
@@ -12,3 +13,9 @@
 /nchenLogger/obj
 /nchenJson/obj
 /nchenTelegram/obj
+/nchenAdaptiveCards/obj
+/nchenMail/obj
+/nchenTasks/obj
+
+# Temporarily
+/nchenAdaptiveCards/Schemas

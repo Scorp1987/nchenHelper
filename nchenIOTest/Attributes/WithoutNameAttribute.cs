@@ -1,4 +1,6 @@
-﻿namespace System.IO.Attributes
+﻿using System.Attributes;
+
+namespace System.IO.Attributes
 {
     class WithoutNameAttribute : DelimitedFileColumnInfoAttribute
     {

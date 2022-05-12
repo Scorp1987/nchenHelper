@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Converters\TypedAbstractJsonConverter.cs" />
     <Compile Include="Converters\GenericArrayConverter.cs" />
     <Compile Include="Converters\ImprovedKeyValuePairConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

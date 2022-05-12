@@ -99,6 +99,7 @@
     <Compile Include="IO\StreamWriterExtension.cs" />
     <Compile Include="IO\DelimitedFileColumnInfo.cs" />
     <Compile Include="Drawing\BasicImageInfo.cs" />
+    <Compile Include="Net\Http\HttpClientExtension.cs" />
     <Compile Include="Net\Mail\HtmlMailMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reflection\PropertyInfoExtension.cs" />

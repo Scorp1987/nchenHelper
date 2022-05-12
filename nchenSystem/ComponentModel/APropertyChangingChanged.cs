@@ -18,7 +18,7 @@
         }
         protected bool SetPropertyValue<T>(string propertyName, T originalValue, T newValue, Action<T> setMethod)
         {
-            if (originalValue.Equals(newValue)) return false;
+            if (originalValue?.Equals(newValue) == true) return false;
             if (!OnPropertyChanging(propertyName, originalValue, newValue)) return false;
             setMethod(newValue);
             OnPropertyChanged(propertyName, originalValue, newValue);
