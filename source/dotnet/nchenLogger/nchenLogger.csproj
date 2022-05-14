@@ -6,6 +6,7 @@
     <Company>Nathan Chen</Company>
     <Authors>Nathan Chen</Authors>
     <Copyright>Copyright © Nathan Chen 2022</Copyright>
+    <RepositoryUrl>https://github.com/Scorp1987/nchenHelper/tree/master/source/dotnet/nchenLogger</RepositoryUrl>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

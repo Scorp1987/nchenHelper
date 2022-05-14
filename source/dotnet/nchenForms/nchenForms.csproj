@@ -10,6 +10,7 @@
     <Copyright>Copyright © NathanChen 2020</Copyright>
     <ApplicationIcon />
     <StartupObject />
+    <RepositoryUrl>https://github.com/Scorp1987/nchenHelper/tree/master/source/dotnet/nchenForms</RepositoryUrl>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

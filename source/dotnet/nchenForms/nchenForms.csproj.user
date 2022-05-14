@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup />
+  <ItemGroup>
+    <Compile Update="CollectionControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="CollectionControl2.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="DataManagementControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="GenericCollectionControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="GenericDictionaryControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="GenericPropertyGrid.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="TypeCollectionControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="TypeObjectControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+  </ItemGroup>
+</Project>
