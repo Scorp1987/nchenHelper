@@ -2,20 +2,36 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-/.vs
 /bin
-/packages
-/TestConsole
-/nchenIOTest/obj
-/nchenSystem/obj
-/nchenVisualBasic/obj
-/nchenForms/obj
-/nchenLogger/obj
-/nchenJson/obj
-/nchenTelegram/obj
-/nchenAdaptiveCards/obj
-/nchenMail/obj
-/nchenTasks/obj
+
+/source/dotnetframework/.vs
+/source/dotnetframework/packages
+/source/dotnetframework/TestConsole
+/source/dotnetframework/nchenIOTest/obj
+/source/dotnetframework/nchenSystem/obj
+/source/dotnetframework/nchenVisualBasic/obj
+/source/dotnetframework/nchenForms/obj
+/source/dotnetframework/nchenLogger/obj
+/source/dotnetframework/nchenJson/obj
+/source/dotnetframework/nchenTelegram/obj
+/source/dotnetframework/nchenAdaptiveCards/obj
+/source/dotnetframework/nchenMail/obj
+/source/dotnetframework/nchenTasks/obj
+
+/source/dotnet/.vs
+/source/dotnet/nchenCore/obj
+/source/dotnet/nchenSqlClient/obj
+/source/dotnet/nchenForms/obj
+/source/dotnet/nchenLogger/obj
+/source/dotnet/nchenJson/obj
+/source/dotnet/nchenTelegram/obj
+/source/dotnet/nchenAdaptiveCard/obj
+/source/dotnet/nchenMail/obj
+/source/dotnet/nchenTasks/obj
 
 # Temporarily
-/nchenAdaptiveCards/Schemas
+/source/dotnetframework/nchenAdaptiveCard/Schemas
+/source/dotnetframework/nchenTasks/Schemas
+/source/dotnet/nchenAdaptiveCard/Schemas
+/source/dotnet/nchenTasks/Schemas
+

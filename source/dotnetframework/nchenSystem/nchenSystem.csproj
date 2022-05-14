@@ -1,0 +1,113 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{403DB690-4B58-4D60-8113-0726B8218BD4}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>System</RootNamespace>
+    <AssemblyName>nchenSystem</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Attributes\NamedAttribute.cs" />
+    <Compile Include="CharExtension.cs" />
+    <Compile Include="Collections\Generic\EventedList.cs" />
+    <Compile Include="Collections\Generic\EventedListEventArgs\ICount.cs" />
+    <Compile Include="Collections\Generic\EventedListEventArgs\IValue.cs" />
+    <Compile Include="Collections\Generic\EventedListEventArgs\ListItemMovedEventArgs.cs" />
+    <Compile Include="Collections\Generic\EventedListEventArgs\ListItemMovingEventArgs.cs" />
+    <Compile Include="Collections\Generic\IDictionaryExtension.cs" />
+    <Compile Include="Collections\Generic\EventedListEventArgs\IIndex.cs" />
+    <Compile Include="Collections\Generic\EventedListEventArgs\IndexValueCancelEventArgs.cs" />
+    <Compile Include="Collections\Generic\EventedListEventArgs\IndexValueEventArgs.cs" />
+    <Compile Include="Collections\Generic\EventedListEventArgs\ListItemAddedEventArgs.cs" />
+    <Compile Include="Collections\Generic\EventedListEventArgs\ListItemAddingEventArgs.cs" />
+    <Compile Include="Collections\Generic\EventedListEventArgs\ListItemChangedEventArgs.cs" />
+    <Compile Include="Collections\Generic\EventedListEventArgs\ListItemChangingEventArgs.cs" />
+    <Compile Include="Collections\Generic\EventedListEventArgs\ListItemRemovedEventArgs.cs" />
+    <Compile Include="Collections\Generic\EventedListEventArgs\ListItemRemovingEventArgs.cs" />
+    <Compile Include="Collections\Generic\EventedListEventArgs\ListRangeItemChangedEventArgs.cs" />
+    <Compile Include="Collections\Generic\EventedListEventArgs\ListRangeItemChangingEventArgs.cs" />
+    <Compile Include="ComponentModel\APropertyChanging.cs" />
+    <Compile Include="ComponentModel\APropertyChangingChanged.cs" />
+    <Compile Include="ComponentModel\ChangedEventArgs.cs" />
+    <Compile Include="ComponentModel\ChangingEventArgs.cs" />
+    <Compile Include="ComponentModel\ClearDateTimeConverter.cs" />
+    <Compile Include="ComponentModel\FloatNumberConverter.cs" />
+    <Compile Include="ComponentModel\ICancelEventArgs.cs" />
+    <Compile Include="ComponentModel\IChangedEventArgs.cs" />
+    <Compile Include="ComponentModel\IChangingEventArgs.cs" />
+    <Compile Include="ComponentModel\ISODateTimeConverter.cs" />
+    <Compile Include="ComponentModel\PropertyChangedEventArgs.cs" />
+    <Compile Include="ComponentModel\PropertyChangedEventArgsExtension.cs" />
+    <Compile Include="ComponentModel\PropertyChangingCancelEventArgs.cs" />
+    <Compile Include="ComponentModel\PropertyChangingEventArgsExtension.cs" />
+    <Compile Include="Attributes\DataColumnInfoAttribute.cs" />
+    <Compile Include="Attributes\StringDataColumnInfoAttribute.cs" />
+    <Compile Include="Data\DataRow.cs" />
+    <Compile Include="Data\DataRowChangeEventArgs.cs" />
+    <Compile Include="Data\DataTable.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Data\DataTableExtension.cs" />
+    <Compile Include="Data\Exceptions\EmptyDataTypeException.cs" />
+    <Compile Include="Data\Exceptions\PropertyInfoNotFoundException.cs" />
+    <Compile Include="Data\SqlClient\SqlBulkCopyExtension.cs" />
+    <Compile Include="Data\SqlClient\SqlCommandExtension.cs" />
+    <Compile Include="Data\SqlClient\SqlConnectionExtension.cs" />
+    <Compile Include="Data\SqlClient\SqlDataReaderExtension.cs" />
+    <Compile Include="Data\Types\PropertyAttributeInfo.cs" />
+    <Compile Include="DateTimeExtension.cs" />
+    <Compile Include="Drawing\ImageExtension.cs" />
+    <Compile Include="Attributes\DelimitedFileColumnInfoAttribute.cs" />
+    <Compile Include="IO\ColumnInfoEnumerableExtension.cs" />
+    <Compile Include="IO\IniFile.cs" />
+    <Compile Include="IO\StreamExtension.cs" />
+    <Compile Include="IO\StreamReaderExtension.cs" />
+    <Compile Include="IO\StreamWriterExtension.cs" />
+    <Compile Include="IO\DelimitedFileColumnInfo.cs" />
+    <Compile Include="Drawing\BasicImageInfo.cs" />
+    <Compile Include="Net\Http\HttpClientExtension.cs" />
+    <Compile Include="Net\Mail\HtmlMailMessage.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Reflection\PropertyInfoExtension.cs" />
+    <Compile Include="ObjectExtension.cs" />
+    <Compile Include="StringExtension.cs" />
+    <Compile Include="TypeExtension.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
