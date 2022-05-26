@@ -130,21 +130,15 @@ namespace System.IO
         }
         private string GetString(TimeSpan timeTaken, TimeUnit unit = DEFAULT_UNIT)
         {
-            switch (unit)
+            return unit switch
             {
-                case TimeUnit.MilliSecond:
-                    return $"{timeTaken.TotalMilliseconds:0.000} msec";
-                case TimeUnit.Second:
-                    return $"{timeTaken.TotalSeconds:0.000} sec";
-                case TimeUnit.Minute:
-                    return $"{timeTaken.TotalMinutes:0.000} min";
-                case TimeUnit.Hour:
-                    return $"{timeTaken.TotalHours:0.000} hr";
-                case TimeUnit.Day:
-                    return $"{timeTaken.TotalDays:0.000} day";
-                default:
-                    throw new NotImplementedException();
-            }
+                TimeUnit.MilliSecond => $"{timeTaken.TotalMilliseconds:0.000} msec",
+                TimeUnit.Second => $"{timeTaken.TotalSeconds:0.000} sec",
+                TimeUnit.Minute => $"{timeTaken.TotalMinutes:0.000} min",
+                TimeUnit.Hour => $"{timeTaken.TotalHours:0.000} hr",
+                TimeUnit.Day => $"{timeTaken.TotalDays:0.000} day",
+                _ => throw new NotImplementedException(),
+            };
         }
 
         public bool RunTask(string taskName, Action function, TimeUnit unit = DEFAULT_UNIT)

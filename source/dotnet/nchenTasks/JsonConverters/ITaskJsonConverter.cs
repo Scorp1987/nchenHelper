@@ -11,24 +11,21 @@ namespace nchen.JsonConverters
 
         protected override ITask GetObject(TaskType type)
         {
-            switch (type)
+            return type switch
             {
-                case TaskType.AssignText: return new AssignTextTask();
-                case TaskType.AssignDateTime: return new AssignDateTimeTask();
-                case TaskType.AssignNumber: return new AssignNumberTask();
-                case TaskType.AssignJsonObject: return new AssignJsonObjectTask();
-                case TaskType.SqlQuery: return new SqlQueryTask();
-                case TaskType.ListenNamedPipe: return new ListenNamedPipeTask();
-
-                case TaskType.SendToChannel: return new SendToChannelTask();
-
-                case TaskType.RunProcess: return new RunProcessTask();
-                case TaskType.SaveJsonObject: return new SaveJsonObjectTask();
-
-                case TaskType.ConcurrentTasks: return new ConcurrentTasks();
-                case TaskType.SequentialTasks: return new SequentialTasks();
-                default: throw new NotImplementedException($"{type} {nameof(TaskType)} is not implemented to convert to Json.");
-            }
+                TaskType.AssignText => new AssignTextTask(),
+                TaskType.AssignDateTime => new AssignDateTimeTask(),
+                TaskType.AssignNumber => new AssignNumberTask(),
+                TaskType.AssignObject => new AssignObjectTask(),
+                TaskType.SqlQuery => new SqlQueryTask(),
+                TaskType.ListenNamedPipe => new ListenNamedPipeTask(),
+                TaskType.SendToChannel => new SendToChannelTask(),
+                TaskType.RunProcess => new RunProcessTask(),
+                TaskType.SaveJsonObject => new SaveJsonObjectTask(),
+                TaskType.ConcurrentTasks => new ConcurrentTasks(),
+                TaskType.SequentialTasks => new SequentialTasks(),
+                _ => throw new NotImplementedException($"{type} {nameof(TaskType)} is not implemented to convert to Json."),
+            };
         }
     }
 }

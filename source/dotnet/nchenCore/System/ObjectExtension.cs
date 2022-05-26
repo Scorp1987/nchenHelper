@@ -51,5 +51,19 @@ namespace System
                 columnInfo.Property.SetValue(@object, value);
             }
         }
+
+        public static T[][] ToJaggedArray<T>(this T[] source, int maxWidth)
+        {
+            var height = Math.Ceiling((double)source.Length / (float)maxWidth);
+            var output = new List<T[]>();
+            for (int row = 0; row < height; row++)
+            {
+                var start = row * maxWidth;
+                var end = (row + 1) * maxWidth;
+                if (end > source.Length) end = source.Length;
+                output.Add(source[start..end]);
+            }
+            return output.ToArray();
+        }
     }
 }

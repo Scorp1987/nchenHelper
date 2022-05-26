@@ -249,7 +249,7 @@ namespace AdaptiveCards.Types
             var toReturn = "";
             foreach (var item in elements)
                 toReturn += $"\n{item?.Render()}";
-            return toReturn[1..];
+            return toReturn.Length>0 ? toReturn[1..] : toReturn;
         }
         private static string Render(this IEnumerable<TextRun> textRuns)
         {

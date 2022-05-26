@@ -14,7 +14,7 @@ namespace nchen.Tasks
         public override TaskType Type => TaskType.ReadDelimitedFile;
         public string Delimiter { get; set; }
         public string FilePath { get; set; }
-        public bool Header { get; set; }
+        public bool Header { get; set; } = true;
 
         protected override string FunctionString => $"ReadDelimitedFile('{Delimiter}', '{FilePath}', {Header})";
 

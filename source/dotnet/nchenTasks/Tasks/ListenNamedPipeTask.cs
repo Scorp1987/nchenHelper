@@ -16,15 +16,11 @@ namespace nchen.Tasks
 
         protected override async Task<object> GetDataAsync(Dictionary<string, object> data)
         {
-            using (var pipeClient = new NamedPipeClientStream(".", PipeName, PipeDirection.In))
-            {
-                await pipeClient.ConnectAsync(TimeoutMsec);
-                using (var reader = new StreamReader(pipeClient))
-                {
-                    string json = await reader.ReadToEndAsync();
-                    return JsonConvert.DeserializeObject(json);
-                }
-            }
+            using var pipeClient = new NamedPipeClientStream(".", PipeName, PipeDirection.In);
+            await pipeClient.ConnectAsync(TimeoutMsec);
+            using var reader = new StreamReader(pipeClient);
+            string json = await reader.ReadToEndAsync();
+            return JsonConvert.DeserializeObject(json);
         }
     }
 }

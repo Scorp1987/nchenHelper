@@ -28,10 +28,10 @@
 /source/dotnet/nchenAdaptiveCard/obj
 /source/dotnet/nchenMail/obj
 /source/dotnet/nchenTasks/obj
+/source/dotnet/nchenCommandLine/obj
 
 # Temporarily
 /source/dotnetframework/nchenAdaptiveCard/Schemas
 /source/dotnetframework/nchenTasks/Schemas
 /source/dotnet/nchenAdaptiveCard/Schemas
 /source/dotnet/nchenTasks/Schemas
-

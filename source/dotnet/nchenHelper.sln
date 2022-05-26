@@ -19,7 +19,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "nchenTasks", "nchenTasks\nc
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "nchenTelegram", "nchenTelegram\nchenTelegram.csproj", "{54FFF78A-6DAC-49C4-8273-B7E0F9CFD76D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nchenForms", "nchenForms\nchenForms.csproj", "{415703F1-DCC0-4C34-BE40-3D7B29B31093}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "nchenForms", "nchenForms\nchenForms.csproj", "{415703F1-DCC0-4C34-BE40-3D7B29B31093}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nchenCommandLine", "nchenCommandLine\nchenCommandLine.csproj", "{04007A82-CD23-4B58-9294-B5A1AE980F70}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,6 +65,10 @@ Global
 		{415703F1-DCC0-4C34-BE40-3D7B29B31093}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{415703F1-DCC0-4C34-BE40-3D7B29B31093}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{415703F1-DCC0-4C34-BE40-3D7B29B31093}.Release|Any CPU.Build.0 = Release|Any CPU
+		{04007A82-CD23-4B58-9294-B5A1AE980F70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04007A82-CD23-4B58-9294-B5A1AE980F70}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04007A82-CD23-4B58-9294-B5A1AE980F70}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04007A82-CD23-4B58-9294-B5A1AE980F70}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

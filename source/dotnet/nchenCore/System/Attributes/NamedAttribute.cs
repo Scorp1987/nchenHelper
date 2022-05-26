@@ -9,6 +9,6 @@
         /// <summary>
         /// Column Name
         /// </summary>
-        public string Name { get; }
+        public string Name { get; set; }
     }
 }

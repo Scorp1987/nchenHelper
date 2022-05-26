@@ -5,7 +5,7 @@
         AssignText = 101,
         AssignDateTime = 102,
         AssignNumber = 103,
-        AssignJsonObject = 104,
+        AssignObject = 104,
         SqlQuery = 106,
         ListenNamedPipe = 107,
         ReadDelimitedFile = 108,

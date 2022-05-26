@@ -37,23 +37,21 @@ namespace nchen.Channels
 
             var url = string.IsNullOrEmpty(IncomingWebhookUrl) ? BotUrl : IncomingWebhookUrl;
 
-            using (var client = new HttpClient())
-            using (var content = new StringContent(payload, Encoding.UTF8, "application/json"))
-            {
-                var response = await client.PostAsync(url, content);
-                var contentStr = await response.Content.ReadAsStringAsync();
+            using var client = new HttpClient();
+            using var content = new StringContent(payload, Encoding.UTF8, "application/json");
+            var response = await client.PostAsync(url, content);
+            var contentStr = await response.Content.ReadAsStringAsync();
 
-                if (!string.IsNullOrEmpty(ConversationID) && response.StatusCode != HttpStatusCode.Created)
-                    throw new Exception($"Couldn't send message to {ConversationID}", new HttpRequestException(contentStr));
-                else if (!string.IsNullOrEmpty(IncomingWebhookUrl) && response.StatusCode != HttpStatusCode.OK)
-                    throw new Exception($"Couldn't send message to {IncomingWebhookUrl}", new HttpRequestException(contentStr));
-                return JsonConvert.SerializeObject(new
-                {
-                    Status = response.StatusCode,
-                    response.Headers,
-                    Body = contentStr,
-                });
-            }
+            if (!string.IsNullOrEmpty(ConversationID) && response.StatusCode != HttpStatusCode.Created)
+                throw new Exception($"Couldn't send message to {ConversationID}", new HttpRequestException(contentStr));
+            else if (!string.IsNullOrEmpty(IncomingWebhookUrl) && response.StatusCode != HttpStatusCode.OK)
+                throw new Exception($"Couldn't send message to {IncomingWebhookUrl}", new HttpRequestException(contentStr));
+            return JsonConvert.SerializeObject(new
+            {
+                Status = response.StatusCode,
+                response.Headers,
+                Body = contentStr,
+            });
         }
     }
 }

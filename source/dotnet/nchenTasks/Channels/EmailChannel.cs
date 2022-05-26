@@ -36,20 +36,18 @@ namespace nchen.Channels
             AppendAdaptiveCard(body, emailTemplate.BodyTemplateFilePath, data);
             AppendAdaptiveCard(body, emailTemplate.FooterTemplateFilePath, data);
 
-            using (var client = new SmtpClient(Smtp))
-            using (var mail = new MailMessage(From, To)
+            using var client = new SmtpClient(Smtp);
+            using var mail = new MailMessage(From, To)
             {
                 Subject = emailTemplate.Subject,
                 IsBodyHtml = true
-            })
-            {
-                if (!string.IsNullOrEmpty(Cc)) mail.CC.Add(Cc);
-                if (!string.IsNullOrEmpty(Bcc)) mail.Bcc.Add(Bcc);
-                mail.Body = doc.OuterXml;
+            };
+            if (!string.IsNullOrEmpty(Cc)) mail.CC.Add(Cc);
+            if (!string.IsNullOrEmpty(Bcc)) mail.Bcc.Add(Bcc);
+            mail.Body = doc.OuterXml;
 
-                await client.SendMailAsync(mail);
-                return mail.Body;
-            }
+            await client.SendMailAsync(mail);
+            return mail.Body;
         }
         private static void AppendAdaptiveCard(XmlNode node, string filePath, object data)
         {

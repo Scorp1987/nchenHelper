@@ -10,10 +10,10 @@ namespace nchen.Tasks
     public class AssignNumberTask : AGetDataTask
     {
         public override TaskType Type => TaskType.AssignNumber;
-        public decimal Number { get; set; }
-        protected override string FunctionString => $"AssignNumber({Number})";
+        public decimal Value { get; set; }
+        protected override string FunctionString => $"AssignNumber({Value})";
 
 
-        protected override Task<object> GetDataAsync(Dictionary<string, object> data) => Task.FromResult<object>(Number);
+        protected override Task<object> GetDataAsync(Dictionary<string, object> data) => Task.FromResult<object>(Value);
     }
 }

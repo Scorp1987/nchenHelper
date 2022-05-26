@@ -15,6 +15,7 @@ namespace nchen.Tasks
         public override TaskType Type => TaskType.SqlQuery;
         public string ConnectionString { get; set; }
         public string ConnectionStringFilePath { get; set; }
+        public string SqlString { get; set; }
         public string SqlFilePath { get; set; }
         public Types.SqlParameter[] Parameters { get; set; }
         protected override string FunctionString
@@ -23,7 +24,8 @@ namespace nchen.Tasks
             {
                 var parameterStr = string.IsNullOrEmpty(ConnectionString) ? "" : $", ConnectionString:'{ConnectionString}'";
                 parameterStr += string.IsNullOrEmpty(ConnectionStringFilePath) ? "" : $", ConnectionStringFilePath:'{ConnectionStringFilePath}'";
-                parameterStr += $", SqlFilePath:'{SqlFilePath}'";
+                parameterStr += string.IsNullOrEmpty(SqlString) ? "" : $", SqlString:'{SqlString}'";
+                parameterStr += string.IsNullOrEmpty(SqlFilePath) ? "" : $", SqlFilePath:'{SqlFilePath}'";
 
                 return $"SqlQuery({parameterStr[2..]})";
             }
@@ -33,7 +35,7 @@ namespace nchen.Tasks
         protected override Task<object> GetDataAsync(Dictionary<string, object> data)
         {
             string connectionString = GetConnectionString();
-            var sqlStatement = File.ReadAllText(SqlFilePath);
+            var sqlStatement = string.IsNullOrEmpty(SqlFilePath) ? SqlString : File.ReadAllText(SqlFilePath);
 
             var toReturn = new DataTable();
             using (var conn = new SqlConnection(connectionString))
