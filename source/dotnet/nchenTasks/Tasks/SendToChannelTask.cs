@@ -1,20 +1,20 @@
-﻿using nchen.Channels;
-using nchen.Enums;
-using nchen.Templates;
+﻿using nchen.Messaging.Channels;
+using nchen.Messaging.Templates;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace nchen.Tasks
 {
-    public class SendToChannelTask : ATask
+    public class SendToChannelTask : ATask, ITask, IChannelTask
     {
         private string _channelFilePath;
 
 
-        public override TaskType Type => TaskType.SendToChannel;
+        public TaskType Type => TaskType.SendToChannel;
         public IChannel Channel { get; set; }
         public ITemplate Template { get; set; }
         public string ChannelFilePath
@@ -29,42 +29,14 @@ namespace nchen.Tasks
                 Channel = JsonConvert.DeserializeObject<IChannel>(json);
             }
         }
-        private static StreamWriter Logger => TaskHelper.DataLogger;
 
 
-        public override async Task<string> ExecuteAsync(Dictionary<string, object> data)
+        public override string GetFunctionString(Dictionary<string, object> data) => $"SendTo{Channel.Type}('{Channel.Name}')";
+        protected override async Task<RunResult> ExecuteTaskAsync(Dictionary<string, object> data, CancellationToken cancellaionToken)
         {
             data["channelType"] = Channel.Type.ToString();
-            try
-            {
-                var result = await CheckTimeout(() => Channel.SendAsync(Template, data));
-                WriteData(Channel, true, result);
-                return null;
-            }
-            catch (Exception ex)
-            {
-                WriteData(Channel, false, ex);
-                throw ex;
-            }
-        }
-        public override string ToString() => $"SendTo{Channel.Type}('{Channel.Name}')";
-        private static void WriteData(IChannel channel, bool result, object obj)
-        {
-            try
-            {
-                if(Logger != null && Logger.BaseStream.Length < 1)
-                    Logger?.WriteLine("Type,Name,Result,Object");
-                if (!(obj is string str))
-                    str = JsonConvert.SerializeObject(obj);
-                Logger?.WriteFields(",", new string[]
-                {
-                    channel.Type.ToString(),
-                    channel.Name,
-                    result ? "Success" : "Fail",
-                    str
-                });
-            }
-            finally { }
+            await Channel.SendAsync(Template, data);
+            return RunResult.Successful;
         }
     }
 }

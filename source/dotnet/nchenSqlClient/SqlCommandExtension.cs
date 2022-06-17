@@ -62,7 +62,7 @@ namespace System.Data.SqlClient
             var dataStr = "";
             foreach (var property in typeof(TObject).GetProperties<TAttribute>())
             {
-                var attribute = property.GetAttribute<TAttribute>();
+                var attribute = property.GetCustomAttribute<TAttribute>(true);
                 var columnName = property.GetName(attribute);
                 var sqlDataType = property.GetSqlDataType(attribute);
                 dataStr += $",{columnName} {sqlDataType}";

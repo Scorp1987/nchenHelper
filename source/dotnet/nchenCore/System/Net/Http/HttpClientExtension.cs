@@ -18,9 +18,9 @@ namespace System.Net.Http
 
         public async static Task<HttpResponseMessage> SendJsonAsync(this HttpClient client, HttpMethod method, string requestUri, string json)
         {
-            using (var content = new StringContent(json, Encoding.UTF8, "application/json"))
-            using (var request = new HttpRequestMessage(method, requestUri) { Content = content })
-                return await client.SendAsync(request);
+            using var content = new StringContent(json, Encoding.UTF8, "application/json");
+            using var request = new HttpRequestMessage(method, requestUri) { Content = content };
+            return await client.SendAsync(request);
         }
         public static Task<HttpResponseMessage> PostJsonAsync(this HttpClient client, string requestUri, string json)
             => client.SendJsonAsync(HttpMethod.Post, requestUri, json);
@@ -30,9 +30,9 @@ namespace System.Net.Http
 
         public async static Task<HttpResponseMessage> SendFormAsync(this HttpClient client, HttpMethod method, string requestUri, Dictionary<string, string> values)
         {
-            using (var content = new FormUrlEncodedContent(values))
-            using (var request = new HttpRequestMessage(method, requestUri) { Content = content })
-                return await client.SendAsync(request);
+            using var content = new FormUrlEncodedContent(values);
+            using var request = new HttpRequestMessage(method, requestUri) { Content = content };
+            return await client.SendAsync(request);
         }
         public static Task<HttpResponseMessage> PostFormAsync(this HttpClient client, string requestUri, Dictionary<string, string> values)
             => client.SendFormAsync(HttpMethod.Post, requestUri, values);

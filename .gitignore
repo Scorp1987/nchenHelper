@@ -19,6 +19,7 @@
 /source/dotnetframework/nchenTasks/obj
 
 /source/dotnet/.vs
+/source/dotnet/TestProjects
 /source/dotnet/nchenCore/obj
 /source/dotnet/nchenSqlClient/obj
 /source/dotnet/nchenForms/obj
@@ -29,6 +30,9 @@
 /source/dotnet/nchenMail/obj
 /source/dotnet/nchenTasks/obj
 /source/dotnet/nchenCommandLine/obj
+/source/dotnet/nchenMessaging/obj
+/source/dotnet/nchenNLP/obj
+/source/dotnet/nchenDrawing/obj
 
 # Temporarily
 /source/dotnetframework/nchenAdaptiveCard/Schemas

@@ -8,7 +8,7 @@ namespace Newtonsoft.Json.Converters
     {
         public override bool CanRead => true;
         public override bool CanWrite => false;
-        protected abstract string TypePropertyName { get; }
+        protected virtual string TypePropertyName { get => "Type"; }
 
         public override IObject ReadJson(JsonReader reader, Type objectType, IObject existingValue, bool hasExistingValue, JsonSerializer serializer)
         {
@@ -17,8 +17,7 @@ namespace Newtonsoft.Json.Converters
                 throw new NotSupportedException($"Missing {TypePropertyName} in {jo}.");
 
             var typeStr = typeToken.Value<string>();
-            if (!Enum.TryParse<IType>(typeStr, out var type))
-                throw new NotSupportedException($"Can't convert {typeStr} to {typeof(IType).Name}.");
+            var type = typeStr.ToEnum<IType>();
 
             var obj = GetObject(type);
             serializer.Populate(jo.CreateReader(), obj);

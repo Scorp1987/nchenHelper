@@ -72,7 +72,7 @@ namespace System.IO
                 string valueStr = GetString(delimiter, value);
                 toReturn += $"{delimiter}{valueStr}";
             }
-            return toReturn.Substring(delimiter.Length);
+            return toReturn[delimiter.Length..];
         }
         #endregion
 
@@ -189,7 +189,7 @@ namespace System.IO
                 }
                 toWrite += $"{delimiter}{valueStr}";
             }
-            toWrite = toWrite.Substring(delimiter.Length);
+            toWrite = toWrite[delimiter.Length..];
             writer.WriteLine(toWrite);
         }
         /// <summary>
@@ -217,7 +217,7 @@ namespace System.IO
                 }
                 toWrite += $"{delimiter}{valueStr}";
             }
-            toWrite = toWrite.Substring(delimiter.Length);
+            toWrite = toWrite[delimiter.Length..];
             await writer.WriteLineAsync(toWrite);
         }
 

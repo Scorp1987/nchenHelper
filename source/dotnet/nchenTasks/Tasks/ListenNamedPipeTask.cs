@@ -1,5 +1,4 @@
-﻿using nchen.Enums;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Pipes;
@@ -7,11 +6,10 @@ using System.Threading.Tasks;
 
 namespace nchen.Tasks
 {
-    public class ListenNamedPipeTask : AGetDataTask
+    public class ListenNamedPipeTask : AGetDataTask, ITask
     {
-        public override TaskType Type => TaskType.ListenNamedPipe;
+        public TaskType Type => TaskType.ListenNamedPipe;
         public string PipeName { get; set; }
-        protected override string FunctionString => $"ListenNamedPipe('{PipeName}')";
 
 
         protected override async Task<object> GetDataAsync(Dictionary<string, object> data)
@@ -22,5 +20,6 @@ namespace nchen.Tasks
             string json = await reader.ReadToEndAsync();
             return JsonConvert.DeserializeObject(json);
         }
+        protected override string GetDataFunctionString(Dictionary<string, object> data) => $"ListenNamedPipe('{PipeName}')";
     }
 }

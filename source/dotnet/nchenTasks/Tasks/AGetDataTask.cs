@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace nchen.Tasks
@@ -7,23 +9,28 @@ namespace nchen.Tasks
     public abstract class AGetDataTask : ATask
     {
         public string Name { get; set; }
-        protected abstract string FunctionString { get; }
 
-        public override async Task<string> ExecuteAsync(Dictionary<string, object> data)
+        public override string GetFunctionString(Dictionary<string, object> data) => $"{Name}={GetDataFunctionString(data)}";
+        public virtual string GetSummaryResult(object obj) => null;
+        public string GetSummaryResult(Dictionary<string, object> data) => GetSummaryResult(data[Name]);
+        protected override async Task<RunResult> ExecuteTaskAsync(Dictionary<string, object> data, CancellationToken cancellationToken)
         {
-            var obj = await CheckTimeout(() => GetDataAsync(data));
-
-            if (data.TryGetValue(Name, out var srcObj)
-                && srcObj is IDisposable srcdispObj
-                && srcdispObj != obj)
-                srcdispObj.Dispose();
+            var obj = await GetDataAsync(data);
+            DisposeIfNecessary(data, obj);
 
             data[Name] = obj;
-            return GetResult(obj);
+            return RunResult.Successful;
         }
-        public override string ToString() => $"{Name}={FunctionString}";
 
-        protected virtual string GetResult(object obj) => null;
         protected abstract Task<object> GetDataAsync(Dictionary<string, object> data);
+        protected abstract string GetDataFunctionString(Dictionary<string, object> data);
+
+        private void DisposeIfNecessary(Dictionary<string, object> data, object obj)
+        {
+            if (!data.TryGetValue(Name, out var srcObj)) return;
+            if (!(srcObj is IDisposable disObj)) return;
+            if (srcObj != obj) return;
+            disObj.Dispose();
+        }
     }
 }

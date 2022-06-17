@@ -32,13 +32,11 @@ namespace System.Windows.Forms.UITypeEditors
             if (context.PropertyDescriptor != null && context.PropertyDescriptor.Attributes[typeof(FormAttribute)] is FormAttribute frmAttrib) { }
             else frmAttrib = null;
 
-            using (var control = new GenericDictionaryControl<Tkey, TValue>(dicAttrib))
-            {
-                control.Value = dictionary;
-                if (frmAttrib == null) control.ShowDialog();
-                else control.ShowDialog(frmAttrib);
-                return base.EditValue(context, provider, value);
-            }
+            using var control = new GenericDictionaryControl<Tkey, TValue>(dicAttrib);
+            control.Value = dictionary;
+            if (frmAttrib == null) control.ShowDialog();
+            else control.ShowDialog(frmAttrib);
+            return base.EditValue(context, provider, value);
         }
     }
 }

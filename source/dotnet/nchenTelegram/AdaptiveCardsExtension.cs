@@ -4,7 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Telegram.Bot.Exceptions;
 
 namespace AdaptiveCards.Types
 {
@@ -162,14 +164,6 @@ namespace AdaptiveCards.Types
                     toReturn[rowIndex, columnIndex] = lines[rowIndex];
                 for (int rowIndex = lines.Length; rowIndex < lines.Length + blankLineCount; rowIndex++)
                     toReturn[rowIndex, columnIndex] = new string(' ', width);
-                //var topBlankLineCount = (int)Math.Floor(blankLineCount / 2f);
-                //var bottomBlankLineCount = (int)Math.Ceiling(blankLineCount / 2f);
-                //for (int rowIndex = 0; rowIndex < topBlankLineCount; rowIndex++)
-                //    toReturn[rowIndex, columnIndex] = new string(' ', width);
-                //for (int rowIndex = topBlankLineCount; rowIndex < topBlankLineCount + lines.Length; rowIndex++)
-                //    toReturn[rowIndex, columnIndex] = lines[rowIndex - topBlankLineCount];
-                //for (int rowIndex = topBlankLineCount + lines.Length; rowIndex < topBlankLineCount + lines.Length + bottomBlankLineCount; rowIndex++)
-                //    toReturn[rowIndex, columnIndex] = new string(' ', width);
             }
             return toReturn;
         }
@@ -189,9 +183,9 @@ namespace AdaptiveCards.Types
         }
 
 
-        private static string Render(this TextBlock textBlock) =>
+        public static string ToMarkDownV2Text(this TextBlock textBlock) =>
             (textBlock.Weight == FontWeight.Bolder) ? $"*{textBlock.Text.FixAllOthers()}*" : textBlock.Text.FixAllOthers();
-        private static string Render(this TextRun textRun)
+        public static string ToMarkDownV2Text(this TextRun textRun)
         {
             if (textRun.InLineCode)
                 return textRun.Text.ToInlineCode();
@@ -214,19 +208,28 @@ namespace AdaptiveCards.Types
 
             return toReturn;
         }
-        private static string Render(this Fact fact, int titleLength)
+        public static string ToMarkDownV2Text(this Fact fact, int titleLength, bool seperator)
         {
-            var valueStr = fact.Value.Render();
+            var valueStr = fact.Value.ToMarkDownV2Text();
             var valueLines = valueStr.Split('\n');
 
-            var titleStr = fact.Title.Render();
-
-            var toReturn = $"{titleStr.PadRight(titleLength)}: ".ToInlineCode() + valueLines[0];
-            for (var i = 1; i < valueLines.Length; i++)
-                toReturn += "\n" + $"{"".PadRight(titleLength)}  ".ToInlineCode() + valueLines[i];
+            var titleStr = fact.Title.GetText();
+            string toReturn;
+            if (seperator)
+            {
+                toReturn = $"{titleStr.PadRight(titleLength)}: ".ToInlineCode() + valueLines[0];
+                for (var i = 1; i < valueLines.Length; i++)
+                    toReturn += "\n" + $"{"".PadRight(titleLength)}  ".ToInlineCode() + valueLines[i];
+            }
+            else
+            {
+                toReturn = $"{titleStr.PadRight(titleLength)} ".ToInlineCode() + valueLines[0];
+                for (var i = 1; i < valueLines.Length; i++)
+                    toReturn += "\n" + $"{"".PadRight(titleLength)} ".ToInlineCode() + valueLines[i];
+            }
             return toReturn;
         }
-        private static string Render(this Table table)
+        public static string ToMarkDownV2Text(this Table table)
         {
             if (table.Rows.Length < 1) return "";
 
@@ -243,43 +246,152 @@ namespace AdaptiveCards.Types
                 toReturn += $"\n{table.Rows[rowIndex].Render(widths)}";
             return $"```\n{toReturn.FixInLineCode()}\n```";
         }
-
-        private static string Render(this IEnumerable<IElement> elements)
+        public static string ToMarkDownV2Text(this IEnumerable<IElement> elements)
         {
             var toReturn = "";
             foreach (var item in elements)
-                toReturn += $"\n{item?.Render()}";
+            {
+                var text = item?.ToMarkDownV2Text();
+                if(!string.IsNullOrEmpty(text))
+                    toReturn += $"\n{text}";
+            }
             return toReturn.Length>0 ? toReturn[1..] : toReturn;
         }
-        private static string Render(this IEnumerable<TextRun> textRuns)
+        public static string ToMarkDownV2Text(this IEnumerable<TextRun> textRuns)
         {
             var toReturn = "";
+            if (textRuns == null) return null;
             foreach (var item in textRuns)
-                toReturn += item.Render();
+                toReturn += item.ToMarkDownV2Text();
             return toReturn;
         }
-
-        private static string Render(this FactSet factSet)
+        public static string ToMarkDownV2Text(this FactSet factSet)
         {
             var maxTitleLength = factSet.Facts.Select(fact => fact.Title.GetText().Length).Max();
 
             var toReturn = "";
             foreach (var fact in factSet.Facts)
-                toReturn += $"\n{fact.Render(maxTitleLength)}";
+                toReturn += $"\n{fact.ToMarkDownV2Text(maxTitleLength, factSet.Seperator)}";
             return toReturn[1..];
         }
-        private static string Render(this RichTextBlock richTextBlock) => richTextBlock.Inlines.Render();
-        private static string Render(this Container container) => container.Items.Render();
-        private static string Render(this IElement element)
+        public static string ToMarkDownV2Text(this RichTextBlock richTextBlock) => richTextBlock.Inlines.ToMarkDownV2Text();
+        public static string ToMarkDownV2Text(this Container container) => container.Items.ToMarkDownV2Text();
+        public static string ToMarkDownV2Text(this IElement element)
         {
-            if (element is TextBlock tb) return tb.Render();
-            else if (element is RichTextBlock rtb) return rtb.Render();
-            else if (element is FactSet fs) return fs.Render();
-            else if (element is Container ct) return ct.Render();
-            else if (element is Table tbl) return tbl.Render();
-            else throw new NotImplementedException();
+            if (element is TextBlock tb) return tb.ToMarkDownV2Text();
+            else if (element is RichTextBlock rtb) return rtb.ToMarkDownV2Text();
+            else if (element is FactSet fs) return fs.ToMarkDownV2Text();
+            else if (element is Container ct) return ct.ToMarkDownV2Text();
+            else if (element is Table tbl) return tbl.ToMarkDownV2Text();
+            else return null;
         }
 
-        public static string RenderTelegramMessage(this AdaptiveCard adaptiveCard) => adaptiveCard.Body.Render();
+
+        private static IInput[] GetInputs(this IEnumerable<IElement> elements)
+        {
+            var toReturn = new List<IInput>();
+            foreach (var element in elements)
+            {
+                if (element is IInput input) toReturn.Add(input);
+                else if (element is Container container) toReturn.AddRange(container.Items.GetInputs());
+                else if (element is Table table)
+                    foreach (var row in table.Rows)
+                        foreach (var cell in row.Cells)
+                            toReturn.AddRange(cell.Items.GetInputs());
+            }
+            return toReturn.ToArray();
+        }
+
+
+        private static string GetValue(this InputText template, string text)
+        {
+            if (template.MaxLength.HasValue && text.Length > template.MaxLength)
+                throw new InvalidInputException($"'{text}' is more than the allowed {template.MaxLength} character length.");
+            if (!string.IsNullOrEmpty(template.Regex))
+            {
+                var match = Regex.Match(text, template.Regex);
+                if (!match.Success)
+                    throw new InvalidInputException($"'{text}' is not match to the '{template.Regex}' pattern.");
+            }
+            return text;
+        }
+        private static DateTime GetValue(this InputDate template, string text)
+        {
+            if (!DateTime.TryParse(text, out var toReturn))
+                throw new InvalidInputException($"'{text}' is not a valid Date.");
+            if (template.Min.HasValue && toReturn < template.Min.Value)
+                throw new InvalidInputException($"'{text}' is earlier than '{template.Min}'.");
+            if (template.Max.HasValue && toReturn > template.Max.Value)
+                throw new InvalidInputException($"'{text}' is later than '{template.Max}'.");
+            return toReturn;
+        }
+        private static DateTime GetValue(this InputTime template, string text)
+        {
+            if (!DateTime.TryParse(text, out var toReturn))
+                throw new InvalidInputException($"'{text}' is not a valid Time.");
+            if (template.Min.HasValue && toReturn < template.Min.Value)
+                throw new InvalidInputException($"'{text}' is earlier than '{template.Min}'.");
+            if (template.Max.HasValue && toReturn > template.Max.Value)
+                throw new InvalidInputException($"'{text}' is later than '{template.Max}'.");
+            return toReturn;
+        }
+        private static decimal GetValue(this InputNumber template, string text)
+        {
+            if (!decimal.TryParse(text, out var output))
+                throw new InvalidInputException($"'{text}' is not a valid number.");
+            if (template.Min.HasValue && output < template.Min.Value)
+                throw new InvalidInputException($"'{text}' is less than '{template.Min}'.");
+            if (template.Max.HasValue && output > template.Max.Value)
+                throw new InvalidInputException($"'{text}' is greater than '{template.Max}'.");
+            return output;
+        }
+        private static string GetValue(this InputChoiceSet template, string prefix, string inlineData)
+        {
+            if (!inlineData.StartsWith(prefix))
+                throw new InvalidInputException($"'{inlineData}' is not valid.");
+            var data = inlineData[prefix.Length..];
+            if (!template.Choices.Select(choice => choice.Value).Contains(data))
+                throw new InvalidInputException($"'{data}' is not a valid choice.");
+            return data;
+        }
+        private static bool GetValue(this InputToogle template, string prefix, string inlineData)
+        {
+            if (!inlineData.StartsWith(prefix))
+                throw new InvalidInputException($"'{inlineData}' is not valid.");
+            var data = inlineData[prefix.Length..];
+
+            if (data == template.ValueOn)
+                return true;
+            else if (data == template.ValueOff)
+                return false;
+            else
+                throw new InvalidInputException($"'{data}' is not a valid choice.");
+        }
+
+
+        public static string ToMarkDownV2Text(this AdaptiveCard adaptiveCard) => adaptiveCard.Body.ToMarkDownV2Text();
+        public static IInput[] GetInputs(this AdaptiveCard adaptiveCard)
+        {
+            var toReturn = new List<IInput>();
+            toReturn.AddRange(adaptiveCard.Body.GetInputs());
+            return toReturn.ToArray();
+        }
+        public static object GetValue(this IInput input, string value, string inlineDataPrefix = null)
+        {
+            if (input is InputText inputText)
+                return inputText.GetValue(value);
+            else if (input is InputNumber inputNumber)
+                return inputNumber.GetValue(value);
+            else if (input is InputDate inputDate)
+                return inputDate.GetValue(value);
+            else if (input is InputTime inputTime)
+                return inputTime.GetValue(value);
+            else if (input is InputToogle inputToogle)
+                return inputToogle.GetValue(inlineDataPrefix, value);
+            else if (input is InputChoiceSet inputChoiceSet)
+                return inputChoiceSet.GetValue(inlineDataPrefix, value);
+            else
+                throw new NotImplementedException($"'{input.Type}' is not implemented in {nameof(GetValue)}.");
+        }
     }
 }

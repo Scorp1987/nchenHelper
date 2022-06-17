@@ -106,8 +106,8 @@ namespace System.IO
         /// <param name="commentStr">Comment String to be ignore</param>
         public void Load(string filePath, Func<string, T> convertFunction, string commentStr = DEF_COMMENT_STRING)
         {
-            using (FileStream stream = System.IO.File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                Load(stream, convertFunction, commentStr);
+            using FileStream stream = System.IO.File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            Load(stream, convertFunction, commentStr);
         }
         #endregion
 
@@ -135,15 +135,13 @@ namespace System.IO
             RegExList regExList = new RegExList(commentStr);
 
             IniSection tempSection = null;
-            using (StreamReader oReader = new StreamReader(stream))
+            using StreamReader oReader = new StreamReader(stream);
+            while (!oReader.EndOfStream)
             {
-                while (!oReader.EndOfStream)
-                {
-                    string line = oReader.ReadLine();
-                    tempSection = ProcessLine(line, tempSection, convertFunction, regExList);
-                }
-                oReader.Close();
+                string line = oReader.ReadLine();
+                tempSection = ProcessLine(line, tempSection, convertFunction, regExList);
             }
+            oReader.Close();
         }
         #endregion
 
@@ -171,8 +169,8 @@ namespace System.IO
         /// <returns></returns>
         public async Task LoadAsync(string filePath, Func<string, T> convertFunction, string commentStr = DEF_COMMENT_STRING)
         {
-            using (FileStream stream = System.IO.File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                await LoadAsync(stream, convertFunction, commentStr);
+            using FileStream stream = System.IO.File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            await LoadAsync(stream, convertFunction, commentStr);
         }
         #endregion
 
@@ -203,15 +201,13 @@ namespace System.IO
             RegExList regExList = new RegExList(commentStr);
 
             IniSection tempSection = null;
-            using (StreamReader oReader = new StreamReader(stream))
+            using StreamReader oReader = new StreamReader(stream);
+            while (!oReader.EndOfStream)
             {
-                while (!oReader.EndOfStream)
-                {
-                    string line = await oReader.ReadLineAsync();
-                    tempSection = ProcessLine(line, tempSection, convertFunction, regExList);
-                }
-                oReader.Close();
+                string line = await oReader.ReadLineAsync();
+                tempSection = ProcessLine(line, tempSection, convertFunction, regExList);
             }
+            oReader.Close();
         }
         #endregion
 
@@ -288,8 +284,8 @@ namespace System.IO
         /// <param name="keyPadding">Right Padding to the key</param>
         public void Save(string filePath, Func<T, string> convertFunction, int keyPadding = DEF_KEY_PADDING)
         {
-            using (FileStream stream = new FileStream(filePath, FileMode.Create))
-                Save(stream, convertFunction, keyPadding);
+            using FileStream stream = new FileStream(filePath, FileMode.Create);
+            Save(stream, convertFunction, keyPadding);
         }
         #endregion
 
@@ -355,8 +351,8 @@ namespace System.IO
         /// <returns></returns>
         public async Task SaveAsync(string filePath, Func<T, string> convertFunction, int keyPadding = DEF_KEY_PADDING)
         {
-            using (FileStream stream = new FileStream(filePath, FileMode.Create))
-                await SaveAsync(stream, convertFunction, keyPadding);
+            using FileStream stream = new FileStream(filePath, FileMode.Create);
+            await SaveAsync(stream, convertFunction, keyPadding);
         }
         #endregion
 

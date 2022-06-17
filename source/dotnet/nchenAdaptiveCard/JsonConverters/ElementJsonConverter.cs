@@ -1,34 +1,17 @@
 ﻿using AdaptiveCards.Enums;
 using AdaptiveCards.Types;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using System;
 
 namespace AdaptiveCards.JsonConverters
 {
-    public class ElementJsonConverter : JsonConverter
+    public class ElementJsonConverter : TypedAbstractJsonConverter<IElement, ElementType>
     {
-        public override bool CanConvert(Type objectType) => objectType == typeof(IElement);
-
-        public override bool CanRead => true;
-
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
-        {
-            JObject jo = JObject.Load(reader);
-            if(!jo.TryGetValue(nameof(IElement.Type), StringComparison.InvariantCultureIgnoreCase, out var typeToken))
-                throw new NotSupportedException($"Missing {nameof(IElement.Type)} in {jo}.");
-
-            var typeStr = typeToken.Value<string>();
-            if (!Enum.TryParse<ElementType>(typeStr, out var type))
-                throw new NotSupportedException($"Can't convert {typeStr} to {nameof(ElementType)}.");
-
-            var element = GetNewElement(type);
-            serializer.Populate(jo.CreateReader(), element);
-            return element;
-        }
-
-        public IElement GetNewElement(ElementType type) => type switch
+        protected override string TypePropertyName => nameof(IElement.Type);
+        protected override IElement GetObject(ElementType type) => type switch
         {
             ElementType.TextBlock => new TextBlock(),
             ElementType.Container => new Container(),
@@ -37,11 +20,13 @@ namespace AdaptiveCards.JsonConverters
             ElementType.RichTextBlock => new RichTextBlock(),
             ElementType.TextRun => new TextRun(),
             ElementType.Link => new Link(),
-            _ => throw new NotImplementedException($"{type} {nameof(ElementType)} is not implemented to convert to Json."),
+            ElementType.InputText => new InputText(),
+            ElementType.InputNumber => new InputNumber(),
+            ElementType.InputDate => new InputDate(),
+            ElementType.InputTime => new InputTime(),
+            ElementType.InputToggle => new InputToogle(),
+            ElementType.InputChoiceSet => new InputChoiceSet(),
+            _ => throw new NotImplementedException($"{type} {nameof(ElementType)} is not implemented to convert from Json."),
         };
-
-        public override bool CanWrite => false;
-
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer) => throw new NotImplementedException();
     }
 }

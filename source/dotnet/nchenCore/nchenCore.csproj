@@ -4,7 +4,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <RootNamespace></RootNamespace>
     <Authors>Nathan Chen</Authors>
-    <Version>1.0.4</Version>
+    <Version>1.0.5</Version>
     <Copyright>Copyright © Nathan Chen 2022</Copyright>
     <RepositoryUrl>https://github.com/Scorp1987/nchenHelper/tree/master/source/dotnet/nchenCore</RepositoryUrl>
   </PropertyGroup>

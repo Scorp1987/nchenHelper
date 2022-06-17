@@ -1,32 +1,28 @@
-﻿using nchen.Enums;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
+using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace nchen.Tasks
 {
-    public class RunProcessTask : ATask
+    public class RunProcessTask : ATask, ITask
     {
-        public override TaskType Type => TaskType.RunProcess;
+        public TaskType Type => TaskType.RunProcess;
         public string FilePath { get; set; }
         public string Arguments { get; set; }
         public string StartIn { get; set; }
 
 
-        public override Task<string> ExecuteAsync(Dictionary<string, object> data)
+        public override string GetFunctionString(Dictionary<string, object> data) => $"RunProcess('{FilePath}','{Arguments}')";
+        protected override async Task<RunResult> ExecuteTaskAsync(Dictionary<string, object> data, CancellationToken cancellationToken)
         {
-            var startInfo = new ProcessStartInfo(FilePath, Arguments);
+            var startInfo = new ProcessStartInfo(FilePath, Arguments) { UseShellExecute = false };
             if (!string.IsNullOrEmpty(StartIn)) startInfo.WorkingDirectory = StartIn;
-
             var process = Process.Start(startInfo);
-            if (!process.WaitForExit(TimeoutMsec))
-                throw new TimeoutException();
-            return Task.FromResult<string>(null);
+            await process.WaitForExitAsync(cancellationToken);
+            return RunResult.Successful;
         }
-
-        public override string ToString() => $"RunProcess('{FilePath}','{Arguments}')";
     }
 }

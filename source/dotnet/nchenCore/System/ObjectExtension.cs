@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -38,6 +39,63 @@ namespace System
                 return (string.IsNullOrEmpty(str) && allowDbNull) ? "NULL" : $"'{str}'";
             else if (value is bool b) return b ? "1" : "0";
             else return value.ToString();
+        }
+
+        private static object GetDeepPropertyValue(this object instance, string[] propNames)
+        {
+            var type = instance.GetType();
+            foreach(var propName in propNames)
+            {
+                if (type.IsGenericType)
+                {
+                    var interfaces = type.GetGenericTypeDefinition().GetInterfaces();
+                    if(interfaces.Count(i => i == typeof(IDictionary)) > 0)
+                    {
+                        var getItem = type.GetMethod("get_Item");
+                        instance = getItem.Invoke(instance, new object[] { propName });
+                        type = instance.GetType();
+                    }
+                }
+                else
+                {
+                    PropertyInfo propInfo = type.GetProperty(propName);
+                    if (propInfo != null)
+                    {
+                        instance = propInfo.GetValue(instance, null);
+                        type = propInfo.PropertyType;
+                    }
+                    else throw new ArgumentException($"'{propName}' property is not found in '{type.Name}' type.");
+                }
+            }
+            return instance;
+        }
+        public static object GetDeepPropertyValue(this object instance, string path)
+        {
+            var propPaths = path.Split('.');
+            return instance.GetDeepPropertyValue(propPaths);
+        }
+        public static void SetDeepPropertyValue(this object instance, string path, object value)
+        {
+            var propNames = path.Split('.');
+            instance = instance.GetDeepPropertyValue(propNames[0..^1]);
+            var type = instance.GetType();
+            var propName = propNames[^1];
+            if (type.IsGenericType)
+            {
+                var interfaces = type.GetGenericTypeDefinition().GetInterfaces();
+                if (interfaces.Count(i => i == typeof(IDictionary)) > 0)
+                {
+                    var setItem = type.GetMethod("set_Item");
+                    setItem.Invoke(instance, new object[] { propName, value });
+                }
+                else
+                {
+                    PropertyInfo propInfo = type.GetProperty(propName);
+                    if (propInfo != null)
+                        propInfo.SetValue(instance, value);
+                    else throw new ArgumentException($"'{propName}' property is not found in '{type.Name}' type.");
+                }
+            }
         }
 
         public static void UpdateObject<TObject>(this TObject @object, IEnumerable<DelimitedFileColumnInfo> columnInfos, string[] values)

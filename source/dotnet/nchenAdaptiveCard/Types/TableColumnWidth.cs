@@ -47,17 +47,13 @@ namespace AdaptiveCards.Types
 
         public object GetWidthObject()
         {
-            switch (Type)
+            return Type switch
             {
-                case TableColumnWidthType.Auto:
-                    return "Auto";
-                case TableColumnWidthType.Absolute:
-                    return Value;
-                case TableColumnWidthType.Max:
-                    return $"Max={Value}";
-                default:
-                    throw new NotImplementedException();
-            }
+                TableColumnWidthType.Auto => "Auto",
+                TableColumnWidthType.Absolute => Value,
+                TableColumnWidthType.Max => $"Max={Value}",
+                _ => throw new NotImplementedException(),
+            };
         }
 
         public override string ToString() => GetWidthObject().ToString();

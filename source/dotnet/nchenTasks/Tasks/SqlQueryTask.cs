@@ -1,37 +1,29 @@
-﻿using nchen.Enums;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace nchen.Tasks
 {
-    public class SqlQueryTask : AGetDataTask
+    public class SqlQueryTask : AGetDataTask, ITask
     {
-        public override TaskType Type => TaskType.SqlQuery;
+        public TaskType Type => TaskType.SqlQuery;
         public string ConnectionString { get; set; }
         public string ConnectionStringFilePath { get; set; }
         public string SqlString { get; set; }
         public string SqlFilePath { get; set; }
         public Types.SqlParameter[] Parameters { get; set; }
-        protected override string FunctionString
+
+
+        public override string GetSummaryResult(object obj)
         {
-            get
-            {
-                var parameterStr = string.IsNullOrEmpty(ConnectionString) ? "" : $", ConnectionString:'{ConnectionString}'";
-                parameterStr += string.IsNullOrEmpty(ConnectionStringFilePath) ? "" : $", ConnectionStringFilePath:'{ConnectionStringFilePath}'";
-                parameterStr += string.IsNullOrEmpty(SqlString) ? "" : $", SqlString:'{SqlString}'";
-                parameterStr += string.IsNullOrEmpty(SqlFilePath) ? "" : $", SqlFilePath:'{SqlFilePath}'";
-
-                return $"SqlQuery({parameterStr[2..]})";
-            }
+            if (obj is DataTable dt)
+                return $"RowCount:{dt.Rows.Count}";
+            else
+                return null;
         }
-
-
         protected override Task<object> GetDataAsync(Dictionary<string, object> data)
         {
             string connectionString = GetConnectionString();
@@ -53,19 +45,17 @@ namespace nchen.Tasks
                 using var adapter = new SqlDataAdapter(command);
                 adapter.Fill(toReturn);
             }
-            
 
-            if (toReturn.Rows.Count < 1)
-                return Task.FromResult<object>(null);
-            else
-                return Task.FromResult<object>(toReturn);
+            return Task.FromResult<object>(toReturn);
         }
-        protected override string GetResult(object obj)
+        protected override string GetDataFunctionString(Dictionary<string, object> data)
         {
-            if (obj is DataTable dt)
-                return $"RowCount:{dt.Rows.Count}";
-            else
-                return null;
+            var parameterStr = string.IsNullOrEmpty(ConnectionString) ? "" : $", ConnectionString:'{ConnectionString}'";
+            parameterStr += string.IsNullOrEmpty(ConnectionStringFilePath) ? "" : $", ConnectionStringFilePath:'{ConnectionStringFilePath}'";
+            parameterStr += string.IsNullOrEmpty(SqlString) ? "" : $", SqlString:'{SqlString}'";
+            parameterStr += string.IsNullOrEmpty(SqlFilePath) ? "" : $", SqlFilePath:'{SqlFilePath}'";
+
+            return $"SqlQuery({parameterStr[2..]})";
         }
         private string GetConnectionString()
         {

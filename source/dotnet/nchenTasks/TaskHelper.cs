@@ -1,38 +1,45 @@
-﻿using AdaptiveCards.Templating;
-using nchen.Tasks;
+﻿using AdaptiveCards;
+using nchen.Messaging.Channels;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace nchen
+namespace nchen.Tasks
 {
     public static class TaskHelper
     {
-        public static ConsoleLogger Logger { get; set; }
-        public static StreamWriter DataLogger { get; set; }
-
-        public static string ExpandAdaptiveTemplate(string json, object data)
+        private static ConsoleLogger _logger;
+        public static ConsoleLogger Logger
         {
-            var template = new AdaptiveCardTemplate(json);
-            var payload = template.Expand(data);
-            payload = payload.FixAdditionalCommaBug();
-            return payload;
-        }
-        public static T ExpandAdaptiveTemplate<T>(string json, object data)
-        {
-            var payload = ExpandAdaptiveTemplate(json, data);
-            return JsonConvert.DeserializeObject<T>(payload);
+            get
+            {
+                if (_logger == null) _logger = new ConsoleLogger();
+                return _logger;
+            }
+            set => _logger = value;
         }
 
 
-        public static async Task RunAsync(this ITask task, Dictionary<string, object> data)
+        public static ITask ReadTask(string filePath, object data)
         {
-            if (task is ATasks)
-                await task.ExecuteAsync(data);
-            else
-                await Logger?.RunTaskAsync(task.ToString(), () => task.ExecuteAsync(data), result => result);
+            var json = File.ReadAllText(filePath);
+            return AdaptiveCardHelper.ExpandAdaptiveTemplate<ITask>(json, data);
         }
+        public static ITask[] ReadTasks(string filePath, object data)
+        {
+            var json = File.ReadAllText(filePath);
+            return AdaptiveCardHelper.ExpandAdaptiveTemplate<ITask[]>(json, data);
+        }
+
+
+        public static IChannel GetChannel(this Dictionary<string, object> data)
+        {
+            if (!data.TryGetValue("channel", out var channelObj)) throw new InvalidOperationException("Can't reply to channel when channel is not found in data.");
+            if (!(channelObj is IChannel channel)) throw new InvalidCastException($"channel in data is not {nameof(IChannel)}");
+            return channel;
+        }
+        public static IChannel GetChannel(this IChannelTask task, Dictionary<string, object> data) => task.Channel ?? data.GetChannel();
     }
 }

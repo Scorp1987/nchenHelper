@@ -1,19 +1,15 @@
-﻿using nchen.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace nchen.Tasks
 {
-    public class AssignNumberTask : AGetDataTask
+    public class AssignNumberTask : AGetDataTask, ITask
     {
-        public override TaskType Type => TaskType.AssignNumber;
+        public TaskType Type => TaskType.AssignNumber;
         public decimal Value { get; set; }
-        protected override string FunctionString => $"AssignNumber({Value})";
 
 
         protected override Task<object> GetDataAsync(Dictionary<string, object> data) => Task.FromResult<object>(Value);
+        protected override string GetDataFunctionString(Dictionary<string, object> data) => $"AssignNumber({Value})";
     }
 }

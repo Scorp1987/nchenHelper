@@ -1,23 +1,14 @@
-﻿using nchen.Enums;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace nchen.Tasks
 {
-    public class AssignDateTimeTask : AGetDataTask
+    public class AssignDateTimeTask : AGetDataTask, ITask
     {
-        public override TaskType Type => TaskType.AssignDateTime;
+        public TaskType Type => TaskType.AssignDateTime;
         public string Value { get; set; }
-        protected override string FunctionString
-        {
-            get
-            {
-                var parameterStr = string.IsNullOrEmpty(Value) ? "" : $"'{Value}'";
-                return $"AssignDateTime({parameterStr})";
-            }
-        }
-        
+
 
         protected override Task<object> GetDataAsync(Dictionary<string, object> data)
         {
@@ -27,6 +18,11 @@ namespace nchen.Tasks
                 return Task.FromResult<object>(dt);
             else
                 return Task.FromResult<object>(null);
+        }
+        protected override string GetDataFunctionString(Dictionary<string, object> data)
+        {
+            var parameterStr = string.IsNullOrEmpty(Value) ? "" : $"'{Value}'";
+            return $"AssignDateTime({parameterStr})";
         }
     }
 }

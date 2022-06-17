@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <RootNamespace>nchen.Messaging</RootNamespace>
+    <Authors>Nathan Chen</Authors>
+    <Copyright>Copyright © NathanChen 2022</Copyright>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>..\..\..\bin\Debug\</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <OutputPath>..\..\..\bin\Release\</OutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Telegram.Bot" Version="17.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\nchenAdaptiveCard\nchenAdaptiveCard.csproj" />
+    <ProjectReference Include="..\nchenJson\nchenJson.csproj" />
+    <ProjectReference Include="..\nchenMail\nchenMail.csproj" />
+    <ProjectReference Include="..\nchenTelegram\nchenTelegram.csproj" />
+  </ItemGroup>
+
+</Project>

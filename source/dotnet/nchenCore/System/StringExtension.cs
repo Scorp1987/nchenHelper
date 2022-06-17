@@ -1,5 +1,8 @@
 ﻿using System.IO;
+using System.Linq;
+using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
+using System.Reflection;
 
 namespace System
 {
@@ -16,7 +19,7 @@ namespace System
             var regex = new Regex("([%][^%]+[%])");
             var path = regex.Replace(str, m =>
             {
-                var value = m.Value.Substring(1, m.Value.Length - 2);
+                var value = m.Value[1..^1];
                 var specialFolder = (Environment.SpecialFolder)Enum.Parse(typeof(Environment.SpecialFolder), value, true);
                 return Environment.GetFolderPath(specialFolder);
             });
@@ -85,6 +88,28 @@ namespace System
         {
             if (DateTime.TryParse(str, out var dt)) return dt;
             else return null;
+        }
+
+        /// <summary>
+        /// Converts the string representation of the name or numeric value of
+        /// one or more enumerated constants to an equivalent enumerated object.
+        /// </summary>
+        /// <typeparam name="TEnum">An enumeration type</typeparam>
+        /// <param name="value">A string containing the name or value to convert.</param>
+        /// <returns>An <typeparamref name="TEnum"/> whose value is represented by <paramref name="value"/>.</returns>
+        public static TEnum ToEnum<TEnum>(this string value)
+            where TEnum : struct
+        {
+            if (int.TryParse(value, out _)) return Enum.Parse<TEnum>(value);
+
+            var enumType = typeof(TEnum);
+            foreach(var name in Enum.GetNames(enumType))
+            {
+                var enumMemberAttribute = enumType.GetField(name).GetCustomAttribute<EnumMemberAttribute>(true);
+                if ((enumMemberAttribute == null && name == value) || (enumMemberAttribute != null && enumMemberAttribute.Value == value))
+                    return Enum.Parse<TEnum>(name);
+            }
+            throw new NotSupportedException($"Can't convert '{value}' to {enumType.Name}.");
         }
     }
 }

@@ -64,7 +64,7 @@ namespace System.Reflection
         public static string GetName<TAttribute>(this PropertyInfo property)
             where TAttribute : NamedAttribute
         {
-            var attribute = property.GetAttribute<TAttribute>();
+            var attribute = property.GetCustomAttribute<TAttribute>();
             return property.GetName(attribute);
         }
 
@@ -113,11 +113,12 @@ namespace System.Reflection
         public static string GetSqlDataType<TAttribute>(this PropertyInfo property)
             where TAttribute : DataColumnInfoAttribute
         {
-            var attribute = property.GetAttribute<TAttribute>();
+            var attribute = property.GetCustomAttribute<TAttribute>();
             return property.GetSqlDataType(attribute);
         }
 
 
+        [Obsolete("Please use System.Reflection.GetCustomAttribute")]
         public static TAttribute GetAttribute<TAttribute>(this PropertyInfo property)
             where TAttribute : Attribute
             => property.GetCustomAttributes<TAttribute>().FirstOrDefault();

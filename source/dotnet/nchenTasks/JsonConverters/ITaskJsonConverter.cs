@@ -1,9 +1,7 @@
-﻿using nchen.Enums;
-using nchen.Tasks;
-using Newtonsoft.Json.Converters;
+﻿using Newtonsoft.Json.Converters;
 using System;
 
-namespace nchen.JsonConverters
+namespace nchen.Tasks.JsonConverters
 {
     public class ITaskJsonConverter : TypedAbstractJsonConverter<ITask, TaskType>
     {
@@ -24,6 +22,11 @@ namespace nchen.JsonConverters
                 TaskType.SaveJsonObject => new SaveJsonObjectTask(),
                 TaskType.ConcurrentTasks => new ConcurrentTasks(),
                 TaskType.SequentialTasks => new SequentialTasks(),
+                TaskType.ConcurrentLoopTasks => new ConcurrentLoopTasks(),
+                TaskType.SequentialLoopTasks => new SequentialLoopTasks(),
+                TaskType.AskInputsFromChannel => new AskInputsFromChannelTask(),
+                TaskType.ReferenceTask => new ReferenceTask(),
+                TaskType.ReplyToChannel => new ReplyToChannelTask(),
                 _ => throw new NotImplementedException($"{type} {nameof(TaskType)} is not implemented to convert to Json."),
             };
         }

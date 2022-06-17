@@ -1,35 +1,38 @@
 ﻿using Microsoft.VisualBasic.FileIO;
-using nchen.Enums;
-using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace nchen.Tasks
 {
-    public class ReadDelimitedFileTask : AGetDataTask
+    public class ReadDelimitedFileTask : AGetDataTask, ITask
     {
-        public override TaskType Type => TaskType.ReadDelimitedFile;
+        public TaskType Type => TaskType.ReadDelimitedFile;
         public string Delimiter { get; set; }
         public string FilePath { get; set; }
         public bool Header { get; set; } = true;
 
-        protected override string FunctionString => $"ReadDelimitedFile('{Delimiter}', '{FilePath}', {Header})";
 
+        public override string GetSummaryResult(object obj)
+        {
+            if (obj is DataTable dt)
+                return $"RowCount:{dt.Rows.Count}";
+            else
+                return null;
+        }
         protected override Task<object> GetDataAsync(Dictionary<string, object> data)
         {
             using var stream = File.Open(FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
             using var parser = new TextFieldParser(stream) { Delimiters = new string[] { Delimiter } };
-            
+
             if (parser.EndOfData) return null;
 
             int columnCount = 0;
             DataTable toReturn = new DataTable();
-            
+
             // First row of delimited file as Column Headers
-            if(Header)
+            if (Header)
             {
                 var headers = parser.ReadFields();
                 columnCount = headers.Length;
@@ -52,5 +55,6 @@ namespace nchen.Tasks
             }
             return Task.FromResult<object>(toReturn);
         }
+        protected override string GetDataFunctionString(Dictionary<string, object> data) => $"ReadDelimitedFile('{Delimiter}', '{FilePath}', {Header})";
     }
 }

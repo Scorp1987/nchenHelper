@@ -30,7 +30,7 @@ namespace System
             var toReturn = new List<PropertyInfo>();
             foreach(var property in type.GetProperties())
             {
-                var attribute = property.GetAttribute<TAttribute>();
+                var attribute = property.GetCustomAttribute<TAttribute>(true);
                 if (attribute == default) continue;
                 toReturn.Add(property);
             }
@@ -98,7 +98,7 @@ namespace System
         {
             type.CheckClass();
             var query = from property in type.GetProperties()
-                        let attribute = property.GetCustomAttributes<TAttribute>().FirstOrDefault()
+                        let attribute = property.GetCustomAttribute<TAttribute>(true)
                         where attribute != null
                         orderby attribute.Index
                         select new DelimitedFileColumnInfo
@@ -150,7 +150,7 @@ namespace System
         {
             type.CheckClass();
             var query = from property in type.GetProperties()
-                        let attribute = property.GetAttribute<TAttribute>()
+                        let attribute = property.GetCustomAttribute<TAttribute>(true)
                         where attribute != null
                         where (attribute.Index.HasValue && attribute.Index.Value == columnInfo.Index.Value) ||
                             (attribute.Name != null && attribute.Name == columnInfo.Name) ||

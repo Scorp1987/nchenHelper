@@ -13,6 +13,8 @@ namespace System
         private static readonly char[] TEXT_SPECIAL_CHARACTERS = { '`', '>', '#', '+', '-', '=', '{', '}', '.', '!' };
         private static readonly char[] OTHER_SPECIAL_CHARACTERS = { '\\', '_', '*', '[', ']', '(', ')', '~', '`', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!' };
 
+        public static string RemoveMentions(this string text, string userName) => text.Replace($"@{userName}", "");
+
         public static string ToText(this object value, IDictionary<Type, TypeConverter> converters = null)
         {
             if (converters != null && converters.TryGetValue(value.GetType(), out var converter))

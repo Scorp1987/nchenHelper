@@ -21,7 +21,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "nchenTelegram", "nchenTeleg
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "nchenForms", "nchenForms\nchenForms.csproj", "{415703F1-DCC0-4C34-BE40-3D7B29B31093}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nchenCommandLine", "nchenCommandLine\nchenCommandLine.csproj", "{04007A82-CD23-4B58-9294-B5A1AE980F70}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "nchenCommandLine", "nchenCommandLine\nchenCommandLine.csproj", "{04007A82-CD23-4B58-9294-B5A1AE980F70}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "nchenNLP", "nchenNLP\nchenNLP.csproj", "{A492998C-F4FE-4281-8D82-AEEE0E20A292}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "nchenMessaging", "nchenMessaging\nchenMessaging.csproj", "{0DE9F34F-433A-49C4-BEA1-DE89D4DEF751}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TestProjects", "TestProjects", "{E68CBD62-3270-4E1F-8BBF-5973F40CACED}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestingConsole", "TestProjects\TestingConsole\TestingConsole.csproj", "{4921F956-6C88-49AE-8358-FBE970B9832F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nchenDrawing", "nchenDrawing\nchenDrawing.csproj", "{E33B084C-43F1-43EC-9872-332BFEE74E77}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -69,9 +79,28 @@ Global
 		{04007A82-CD23-4B58-9294-B5A1AE980F70}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{04007A82-CD23-4B58-9294-B5A1AE980F70}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{04007A82-CD23-4B58-9294-B5A1AE980F70}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A492998C-F4FE-4281-8D82-AEEE0E20A292}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A492998C-F4FE-4281-8D82-AEEE0E20A292}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A492998C-F4FE-4281-8D82-AEEE0E20A292}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A492998C-F4FE-4281-8D82-AEEE0E20A292}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0DE9F34F-433A-49C4-BEA1-DE89D4DEF751}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0DE9F34F-433A-49C4-BEA1-DE89D4DEF751}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0DE9F34F-433A-49C4-BEA1-DE89D4DEF751}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0DE9F34F-433A-49C4-BEA1-DE89D4DEF751}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4921F956-6C88-49AE-8358-FBE970B9832F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4921F956-6C88-49AE-8358-FBE970B9832F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4921F956-6C88-49AE-8358-FBE970B9832F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4921F956-6C88-49AE-8358-FBE970B9832F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E33B084C-43F1-43EC-9872-332BFEE74E77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E33B084C-43F1-43EC-9872-332BFEE74E77}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E33B084C-43F1-43EC-9872-332BFEE74E77}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E33B084C-43F1-43EC-9872-332BFEE74E77}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{4921F956-6C88-49AE-8358-FBE970B9832F} = {E68CBD62-3270-4E1F-8BBF-5973F40CACED}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4D5E9702-127A-4CC9-82B7-F4BE3D333EF3}

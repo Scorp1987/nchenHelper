@@ -7,6 +7,7 @@
     <Copyright>Copyright © Nathan Chen 2022</Copyright>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <RepositoryUrl>https://github.com/Scorp1987/nchenHelper/tree/master/source/dotnet/nchenSqlClient</RepositoryUrl>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

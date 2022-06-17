@@ -1,7 +1,8 @@
-﻿using nchen.Enums;
-using nchen.JsonConverters;
+﻿using nchen.Tasks.JsonConverters;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace nchen.Tasks
@@ -14,6 +15,7 @@ namespace nchen.Tasks
         int TimeoutMsec { get; set; }
 
 
-        Task<string> ExecuteAsync(Dictionary<string, object> data);
+        Task<RunResult> ExecuteAsync(Dictionary<string, object> data, CancellationToken cancellationToken = default);
+        string GetFunctionString(Dictionary<string, object> data);
     }
 }

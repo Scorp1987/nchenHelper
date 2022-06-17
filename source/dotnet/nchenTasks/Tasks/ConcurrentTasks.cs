@@ -1,57 +1,47 @@
-﻿using nchen.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace nchen.Tasks
 {
-    public class ConcurrentTasks : ATasks
+    public class ConcurrentTasks : ATasks, ITask
     {
-        public override TaskType Type => TaskType.ConcurrentTasks;
+        public virtual TaskType Type => TaskType.ConcurrentTasks;
 
 
-        public override async Task<string> ExecuteAsync(Dictionary<string, object> data)
+        protected virtual async Task<RunResult> WhenAll(IEnumerable<Task<RunResult>> tasks)
         {
-            try
+            foreach(var task in tasks)
             {
-                var tasks = GetTasks(data);
-                var stasks = new List<Task>(tasks.Length);
-                foreach (var task in tasks)
-                    stasks.Add(ExecuteTaskAsync(task, data));
-
-                await Task.WhenAll(stasks);
+                var result = await task;
+                if (result != RunResult.Successful) return result;
             }
-            catch(Exception ex)
-            {
-                Logger?.WriteException($"Unknown error occurred at {nameof(ConcurrentTasks.ExecuteAsync)}.", ex);
-            }
-            return null;
+            return RunResult.Successful;
         }
-        public override string ToString() => $"ConcurrentTasks()";
-        private async Task ExecuteTaskAsync(ITask task, Dictionary<string, object> data)
+        public override async Task<RunResult> ExecuteAsync(Dictionary<string, object> data, CancellationToken cancellationToken)
         {
-            var taskStartTime = DateTime.Now;
-            var taskName = task.ToString();
-            string result;
-            string additionalResult = null;
-            try
+            var tasks = GetTasks(data);
+            var stasks = new List<Task<RunResult>>(tasks.Length);
+            foreach (var task in tasks)
+                stasks.Add(ExecuteTaskAsync(task, data, cancellationToken));
+            return await WhenAll(stasks);
+        }
+        protected override Task<RunResult> ExecuteTaskAsync(Dictionary<string, object> data, CancellationToken cancellationToken) => throw new System.NotImplementedException();
+        private async Task<RunResult> ExecuteTaskAsync(ITask task, Dictionary<string, object> data, CancellationToken cancellationToken)
+        {
+            if (task is ATasks || task is ReferenceTask)
+                return await task.ExecuteAsync(data, cancellationToken);
+            else if(task is AGetDataTask getDataTask)
             {
-                additionalResult = await task.ExecuteAsync(data);
-                result = "Successful";
+                var result = await Logger.RunSlowTaskAsync(task.GetFunctionString(data), () => task.ExecuteAsync(data, cancellationToken), r => (r == RunResult.Successful) ? getDataTask.GetSummaryResult(data) : null);
+                return (result.Value == RunResult.Default) ? result.Key : result.Value;
             }
-            catch (Exception ex)
+            else
             {
-                result = "Error";
-                Logger?.WriteException(taskName, ex);
+                var result = await Logger.RunSlowTaskAsync(task.GetFunctionString(data), () => task.ExecuteAsync(data, cancellationToken));
+                return (result.Value == RunResult.Default) ? result.Key : result.Value;
             }
-
-            var taskTimeTaken = DateTime.Now - taskStartTime;
-            if (!string.IsNullOrEmpty(additionalResult))
-                additionalResult = $" {additionalResult}.";
-            if (!(task is ATasks))
-                await Logger?.WriteLogAsync($"Execute {taskName}...{result}.{additionalResult} TimeTaken: {taskTimeTaken.TotalSeconds:0.000} sec");
         }
     }
 }
